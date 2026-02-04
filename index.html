@@ -531,6 +531,158 @@
             background: #c0392b;
             transform: translateY(-2px);
         }
+
+        .manage-members-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            margin-left: 10px;
+        }
+
+        .manage-members-btn:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+        }
+
+        .member-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+
+        .member-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: var(--bg);
+            border-radius: 8px;
+            border: 2px solid var(--border);
+        }
+
+        .member-name {
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .delete-member-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+
+        .delete-member-btn:hover {
+            background: #c0392b;
+        }
+
+        .admin-mode-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            margin-left: 10px;
+        }
+
+        .admin-mode-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .stats-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        .stats-table th,
+        .stats-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .stats-table th {
+            background: var(--bg);
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .stats-table tr:hover {
+            background: var(--bg);
+        }
+
+        .month-selector {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .month-selector button {
+            padding: 8px 15px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .month-selector button:hover {
+            background: var(--primary-light);
+        }
+
+        .admin-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .admin-tab {
+            padding: 12px 20px;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+            color: var(--text-light);
+            transition: all 0.3s ease;
+        }
+
+        .admin-tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .admin-tab:hover {
+            color: var(--primary);
+        }
     </style>
 </head>
 <body>
@@ -539,29 +691,21 @@
     <script type="text/babel">
         const { useState, useEffect } = React;
 
-        const FAMILY_MEMBERS = ['父', '母', '颯太', '莉緒', '麻緒'];
-        
-        // 各メンバーのPINコード設定
-        const MEMBER_PINS = {
-            '父': '1234',
-            '母': '5678',
-            '颯太': '9012',
-            '莉緒': '3456',
-            '麻緒': '7890'
-        };
+        // 初期メンバーデータ（Firebaseに保存されていない場合の初期値）
+        const INITIAL_MEMBERS = [
+            { name: '管理者', pin: '0000', isAdmin: true }
+        ];
 
         // Firebase設定（デモ用の公開設定 - 実際の使用時は独自の設定に変更してください）
         const firebaseConfig = {
-            apiKey: "AIzaSyCd8tnYHwCY93tEXRhxPIjX9Dks2ly25MY",
-            authDomain: "family-car-share-8a1c4.firebaseapp.com",
-            databaseURL: "https://family-car-share-8a1c4-default-rtdb.asia-southeast1.firebasedatabase.app",
-            projectId: "family-car-share-8a1c4",
-            storageBucket: "family-car-share-8a1c4.firebasestorage.app",
-            messagingSenderId: "61412197996",
-            appId: "1:61412197996:web:d65b24df6a1bb83519ba49",
-            measurementId: "G-C0CP5Z1ZND"
+            apiKey: "AIzaSyDemoKeyForCarSharing123456789",
+            authDomain: "car-sharing-demo.firebaseapp.com",
+            databaseURL: "https://car-sharing-demo-default-rtdb.firebaseio.com",
+            projectId: "car-sharing-demo",
+            storageBucket: "car-sharing-demo.appspot.com",
+            messagingSenderId: "123456789012",
+            appId: "1:123456789012:web:abc123def456"
         };
-
         // Firebase初期化
         let database;
         let isFirebaseReady = false;
@@ -609,7 +753,7 @@
                 const localDateString = `${year}-${month}-${day}`;
                 
                 return {
-                    member: FAMILY_MEMBERS[0],
+                    member: '', // メンバーは後で設定
                     date: localDateString,
                     startHour: '12',
                     startMinute: '00',
@@ -625,16 +769,71 @@
             const [isAuthenticated, setIsAuthenticated] = useState(false); // 認証状態
             const [showLoginModal, setShowLoginModal] = useState(true); // ログインモーダルの表示状態
             const [pinInput, setPinInput] = useState(''); // PIN入力値
-            const [selectedMemberForLogin, setSelectedMemberForLogin] = useState(FAMILY_MEMBERS[0]); // ログイン対象メンバー
+            const [selectedMemberForLogin, setSelectedMemberForLogin] = useState(''); // ログイン対象メンバー
+            const [members, setMembers] = useState([]); // メンバーリスト
+            const [showMemberManagement, setShowMemberManagement] = useState(false); // メンバー管理モーダル
+            const [newMemberName, setNewMemberName] = useState(''); // 新規メンバー名
+            const [newMemberPin, setNewMemberPin] = useState(''); // 新規メンバーPIN
+            const [isAdmin, setIsAdmin] = useState(false); // 管理者かどうか
+            const [showAdminMode, setShowAdminMode] = useState(false); // 管理者モード表示
+            const [selectedMonth, setSelectedMonth] = useState(new Date()); // 統計表示用の月
+            const [selectedMemberForStats, setSelectedMemberForStats] = useState(''); // 統計表示用のメンバー
 
             // localStorageから認証情報を復元
             useEffect(() => {
                 const savedUser = localStorage.getItem('authenticatedUser');
-                if (savedUser && FAMILY_MEMBERS.includes(savedUser)) {
+                if (savedUser) {
                     setCurrentUser(savedUser);
                     setIsAuthenticated(true);
                     setShowLoginModal(false);
+                    // 管理者フラグはメンバーリストが読み込まれた後に設定
                 }
+            }, []);
+
+            // メンバーリストが読み込まれた後、保存されたユーザーの管理者フラグを復元
+            useEffect(() => {
+                if (currentUser && members.length > 0) {
+                    const member = members.find(m => m.name === currentUser);
+                    if (member) {
+                        setIsAdmin(member.isAdmin || false);
+                    }
+                }
+            }, [members, currentUser]);
+
+            // Firebaseからメンバーデータを読み込み
+            useEffect(() => {
+                if (!isFirebaseReady) return;
+
+                const membersRef = database.ref('members');
+                
+                const listener = membersRef.on('value', (snapshot) => {
+                    const data = snapshot.val();
+                    if (data) {
+                        const membersList = Object.keys(data).map(key => ({
+                            id: key,
+                            name: data[key].name,
+                            pin: data[key].pin,
+                            isAdmin: data[key].isAdmin || false
+                        }));
+                        setMembers(membersList);
+                        
+                        // 初回選択用にメンバーが存在する場合は最初のメンバーを選択
+                        if (membersList.length > 0 && !selectedMemberForLogin) {
+                            setSelectedMemberForLogin(membersList[0].name);
+                        }
+                    } else {
+                        // 初期メンバーをFirebaseに登録
+                        INITIAL_MEMBERS.forEach(member => {
+                            membersRef.push({
+                                name: member.name,
+                                pin: member.pin,
+                                isAdmin: member.isAdmin || false
+                            });
+                        });
+                    }
+                });
+
+                return () => membersRef.off('value', listener);
             }, []);
 
             // Firebaseからのリアルタイムデータ監視
@@ -785,9 +984,11 @@
             // ログイン処理
             const handleLogin = (e) => {
                 e.preventDefault();
-                if (MEMBER_PINS[selectedMemberForLogin] === pinInput) {
+                const member = members.find(m => m.name === selectedMemberForLogin);
+                if (member && member.pin === pinInput) {
                     setCurrentUser(selectedMemberForLogin);
                     setIsAuthenticated(true);
+                    setIsAdmin(member.isAdmin || false);
                     setShowLoginModal(false);
                     localStorage.setItem('authenticatedUser', selectedMemberForLogin);
                     setPinInput('');
@@ -803,9 +1004,133 @@
                 if (window.confirm('ログアウトしますか？')) {
                     setCurrentUser(null);
                     setIsAuthenticated(false);
+                    setIsAdmin(false);
                     setShowLoginModal(true);
+                    setShowAdminMode(false);
                     localStorage.removeItem('authenticatedUser');
                     setPinInput('');
+                }
+            };
+
+            // メンバー追加処理
+            const handleAddMember = async (e) => {
+                e.preventDefault();
+                
+                if (!newMemberName || !newMemberPin) {
+                    alert('名前とPINコードを入力してください');
+                    return;
+                }
+
+                if (newMemberPin.length !== 4 || !/^\d{4}$/.test(newMemberPin)) {
+                    alert('PINコードは4桁の数字で入力してください');
+                    return;
+                }
+
+                // 名前の重複チェック
+                if (members.some(m => m.name === newMemberName)) {
+                    alert('同じ名前のメンバーが既に存在します');
+                    return;
+                }
+
+                try {
+                    await database.ref('members').push({
+                        name: newMemberName,
+                        pin: newMemberPin
+                    });
+                    setNewMemberName('');
+                    setNewMemberPin('');
+                    alert('メンバーを追加しました');
+                } catch (error) {
+                    console.error('メンバー追加エラー:', error);
+                    alert('メンバーの追加に失敗しました');
+                }
+            };
+
+            // メンバー削除処理（管理者のみ）
+            const handleDeleteMember = async (memberId, memberName) => {
+                if (!isAdmin) {
+                    alert('メンバーの削除は管理者のみ実行できます');
+                    return;
+                }
+
+                // 管理者自身は削除できない
+                const memberToDelete = members.find(m => m.id === memberId);
+                if (memberToDelete && memberToDelete.isAdmin) {
+                    alert('管理者アカウントは削除できません');
+                    return;
+                }
+
+                // そのメンバーの予約があるかチェック
+                const memberReservations = reservations.filter(r => r.member === memberName);
+                
+                if (memberReservations.length > 0) {
+                    alert(`${memberName}の予約が${memberReservations.length}件あります。先に予約を削除してください。`);
+                    return;
+                }
+
+                if (window.confirm(`${memberName}を削除してもよろしいですか？`)) {
+                    try {
+                        await database.ref(`members/${memberId}`).remove();
+                        alert('メンバーを削除しました');
+                    } catch (error) {
+                        console.error('メンバー削除エラー:', error);
+                        alert('メンバーの削除に失敗しました');
+                    }
+                }
+            };
+
+            // 管理者用: 指定月のメンバー別統計を計算
+            const getMemberStatsForMonth = (year, month) => {
+                const stats = {};
+                
+                reservations.forEach(reservation => {
+                    const resDate = new Date(reservation.date + 'T00:00:00');
+                    if (resDate.getFullYear() === year && resDate.getMonth() === month) {
+                        if (!stats[reservation.member]) {
+                            stats[reservation.member] = {
+                                count: 0,
+                                totalHours: 0,
+                                totalPrice: 0,
+                                reservations: []
+                            };
+                        }
+                        stats[reservation.member].count += 1;
+                        stats[reservation.member].totalHours += reservation.hours;
+                        stats[reservation.member].totalPrice += reservation.price;
+                        stats[reservation.member].reservations.push(reservation);
+                    }
+                });
+                
+                return stats;
+            };
+
+            // 管理者用: 指定月の特定メンバーの予約一覧を取得
+            const getMemberReservationsForMonth = (memberName, year, month) => {
+                return reservations
+                    .filter(reservation => {
+                        const resDate = new Date(reservation.date + 'T00:00:00');
+                        return reservation.member === memberName && 
+                               resDate.getFullYear() === year && 
+                               resDate.getMonth() === month;
+                    })
+                    .sort((a, b) => new Date(a.date) - new Date(b.date));
+            };
+
+            // 管理者用: 予約削除（すべての予約を削除可能）
+            const handleAdminDeleteReservation = async (id) => {
+                if (!isAdmin) {
+                    alert('この操作は管理者のみ実行できます');
+                    return;
+                }
+
+                if (window.confirm('この予約を削除してもよろしいですか？')) {
+                    try {
+                        await database.ref(`reservations/${id}`).remove();
+                        alert('予約を削除しました');
+                    } catch (error) {
+                        console.error('削除エラー:', error);
+                        alert('削除に失敗しました');
+                    }
                 }
             };
 
@@ -908,7 +1233,6 @@
             };
 
             const selectedDateReservations = getReservationsForDate(selectedDate);
-            const formDateReservations = formData.date ? reservations.filter(r => r.date === formData.date) : [];
 
             const days = getDaysInMonth(currentDate);
             const weekDays = ['日', '月', '火', '水', '木', '金', '土'];
@@ -942,12 +1266,82 @@
                         <div className="modal-overlay">
                             <div className="modal-content">
                                 <h2>🔐 ログイン</h2>
-                                <form onSubmit={handleLogin} className="login-form">
+                                {members.length === 0 ? (
+                                    <div style={{textAlign: 'center', padding: '20px', color: 'var(--text-light)'}}>
+                                        メンバーデータを読み込み中...
+                                    </div>
+                                ) : (
+                                    <form onSubmit={handleLogin} className="login-form">
+                                        <div className="form-group">
+                                            <label>使用者を選択</label>
+                                            <select
+                                                value={selectedMemberForLogin}
+                                                onChange={(e) => setSelectedMemberForLogin(e.target.value)}
+                                                style={{
+                                                    width: '100%',
+                                                    padding: '12px',
+                                                    fontSize: '1rem',
+                                                    borderRadius: '10px',
+                                                    border: '2px solid var(--border)',
+                                                    fontFamily: 'Outfit, sans-serif'
+                                                }}
+                                            >
+                                                {members.map(member => (
+                                                    <option key={member.id} value={member.name}>{member.name}</option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                        <div className="form-group">
+                                            <label>4桁のPINコード</label>
+                                            <input
+                                                type="password"
+                                                className="pin-input"
+                                                value={pinInput}
+                                                onChange={(e) => setPinInput(e.target.value)}
+                                                maxLength="4"
+                                                pattern="[0-9]{4}"
+                                                placeholder="••••"
+                                                required
+                                                autoFocus
+                                            />
+                                        </div>
+                                        <button type="submit" className="btn-primary" style={{marginTop: '10px'}}>
+                                            ログイン
+                                        </button>
+                                    </form>
+                                )}
+                            </div>
+                        </div>
+                    )}
+
+                    {showMemberManagement && (
+                        <div className="modal-overlay">
+                            <div className="modal-content" style={{maxWidth: '500px'}}>
+                                <h2>👥 メンバー管理</h2>
+                                
+                                <div className="member-list">
+                                    {members.map(member => (
+                                        <div key={member.id} className="member-item">
+                                            <span className="member-name">{member.name}</span>
+                                            <button 
+                                                className="delete-member-btn"
+                                                onClick={() => handleDeleteMember(member.id, member.name)}
+                                            >
+                                                削除
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                <form onSubmit={handleAddMember} className="login-form">
+                                    <h3 style={{marginBottom: '15px', color: 'var(--primary)'}}>新規メンバー追加</h3>
                                     <div className="form-group">
-                                        <label>使用者を選択</label>
-                                        <select
-                                            value={selectedMemberForLogin}
-                                            onChange={(e) => setSelectedMemberForLogin(e.target.value)}
+                                        <label>名前</label>
+                                        <input
+                                            type="text"
+                                            value={newMemberName}
+                                            onChange={(e) => setNewMemberName(e.target.value)}
+                                            placeholder="例: 次女"
                                             style={{
                                                 width: '100%',
                                                 padding: '12px',
@@ -956,30 +1350,154 @@
                                                 border: '2px solid var(--border)',
                                                 fontFamily: 'Outfit, sans-serif'
                                             }}
-                                        >
-                                            {FAMILY_MEMBERS.map(member => (
-                                                <option key={member} value={member}>{member}</option>
-                                            ))}
-                                        </select>
+                                            required
+                                        />
                                     </div>
                                     <div className="form-group">
                                         <label>4桁のPINコード</label>
                                         <input
                                             type="password"
                                             className="pin-input"
-                                            value={pinInput}
-                                            onChange={(e) => setPinInput(e.target.value)}
+                                            value={newMemberPin}
+                                            onChange={(e) => setNewMemberPin(e.target.value)}
                                             maxLength="4"
                                             pattern="[0-9]{4}"
                                             placeholder="••••"
                                             required
-                                            autoFocus
                                         />
                                     </div>
-                                    <button type="submit" className="btn-primary" style={{marginTop: '10px'}}>
-                                        ログイン
-                                    </button>
+                                    <div style={{display: 'flex', gap: '10px', marginTop: '10px'}}>
+                                        <button type="submit" className="btn-primary" style={{flex: 1}}>
+                                            メンバーを追加
+                                        </button>
+                                        <button 
+                                            type="button" 
+                                            className="logout-btn" 
+                                            style={{flex: 1}}
+                                            onClick={() => {
+                                                setShowMemberManagement(false);
+                                                setNewMemberName('');
+                                                setNewMemberPin('');
+                                            }}
+                                        >
+                                            閉じる
+                                        </button>
+                                    </div>
                                 </form>
+                            </div>
+                        </div>
+                    )}
+
+                    {showAdminMode && isAdmin && (
+                        <div className="modal-overlay">
+                            <div className="modal-content" style={{maxWidth: '900px', maxHeight: '80vh', overflow: 'auto'}}>
+                                <h2>👑 管理者モード</h2>
+                                
+                                <div className="month-selector">
+                                    <button onClick={() => setSelectedMonth(new Date(selectedMonth.getFullYear(), selectedMonth.getMonth() - 1, 1))}>
+                                        ← 前月
+                                    </button>
+                                    <span style={{fontSize: '1.2rem', fontWeight: '600', minWidth: '150px', textAlign: 'center'}}>
+                                        {selectedMonth.getFullYear()}年 {selectedMonth.getMonth() + 1}月
+                                    </span>
+                                    <button onClick={() => setSelectedMonth(new Date(selectedMonth.getFullYear(), selectedMonth.getMonth() + 1, 1))}>
+                                        次月 →
+                                    </button>
+                                </div>
+
+                                {(() => {
+                                    const stats = getMemberStatsForMonth(selectedMonth.getFullYear(), selectedMonth.getMonth());
+                                    const memberNames = Object.keys(stats).sort();
+
+                                    return (
+                                        <>
+                                            <h3 style={{marginTop: '20px', marginBottom: '15px', color: 'var(--primary)'}}>
+                                                📊 メンバー別統計
+                                            </h3>
+                                            {memberNames.length === 0 ? (
+                                                <p style={{textAlign: 'center', color: 'var(--text-light)', padding: '20px'}}>
+                                                    この月の予約はありません
+                                                </p>
+                                            ) : (
+                                                <table className="stats-table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>メンバー</th>
+                                                            <th>予約回数</th>
+                                                            <th>合計時間</th>
+                                                            <th>合計金額</th>
+                                                            <th>操作</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {memberNames.map(memberName => (
+                                                            <tr key={memberName}>
+                                                                <td style={{fontWeight: '600'}}>{memberName}</td>
+                                                                <td>{stats[memberName].count}回</td>
+                                                                <td>{stats[memberName].totalHours.toFixed(2)}時間</td>
+                                                                <td>¥{stats[memberName].totalPrice.toLocaleString()}</td>
+                                                                <td>
+                                                                    <button
+                                                                        className="nav-btn"
+                                                                        style={{padding: '6px 12px', fontSize: '0.85rem'}}
+                                                                        onClick={() => setSelectedMemberForStats(memberName)}
+                                                                    >
+                                                                        詳細
+                                                                    </button>
+                                                                </td>
+                                                            </tr>
+                                                        ))}
+                                                    </tbody>
+                                                </table>
+                                            )}
+
+                                            {selectedMemberForStats && (
+                                                <>
+                                                    <h3 style={{marginTop: '30px', marginBottom: '15px', color: 'var(--primary)'}}>
+                                                        📝 {selectedMemberForStats}の利用履歴
+                                                    </h3>
+                                                    <div className="reservation-list" style={{maxHeight: '300px', marginBottom: '20px'}}>
+                                                        {getMemberReservationsForMonth(
+                                                            selectedMemberForStats,
+                                                            selectedMonth.getFullYear(),
+                                                            selectedMonth.getMonth()
+                                                        ).map(reservation => (
+                                                            <div key={reservation.id} className="reservation-item">
+                                                                <h4>{reservation.date}</h4>
+                                                                <div className="reservation-detail">
+                                                                    {reservation.startTime} - {reservation.endTime}
+                                                                </div>
+                                                                <div className="reservation-detail">
+                                                                    使用時間: {reservation.hours.toFixed(2)}時間
+                                                                </div>
+                                                                <div className="reservation-price">
+                                                                    ¥{reservation.price.toLocaleString()}
+                                                                </div>
+                                                                <button
+                                                                    className="delete-btn"
+                                                                    onClick={() => handleAdminDeleteReservation(reservation.id)}
+                                                                >
+                                                                    削除
+                                                                </button>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                </>
+                                            )}
+                                        </>
+                                    );
+                                })()}
+
+                                <button 
+                                    className="btn-primary" 
+                                    style={{width: '100%', marginTop: '20px'}}
+                                    onClick={() => {
+                                        setShowAdminMode(false);
+                                        setSelectedMemberForStats('');
+                                    }}
+                                >
+                                    閉じる
+                                </button>
                             </div>
                         </div>
                     )}
@@ -995,6 +1513,14 @@
                                 <span style={{fontSize: '0.95rem', color: 'var(--text)', fontWeight: '600'}}>
                                     ログイン中: <span style={{color: 'var(--primary)', fontSize: '1.1rem'}}>{currentUser}</span>
                                 </span>
+                                {isAdmin && (
+                                    <button className="admin-mode-btn" onClick={() => setShowAdminMode(true)}>
+                                        👑 管理者モード
+                                    </button>
+                                )}
+                                <button className="manage-members-btn" onClick={() => setShowMemberManagement(true)}>
+                                    メンバー管理
+                                </button>
                                 <button className="logout-btn" onClick={handleLogout}>
                                     ログアウト
                                 </button>
@@ -1094,10 +1620,10 @@
                                                 <div className="reservation-price">
                                                     ¥{reservation.price.toLocaleString()}
                                                 </div>
-                                                {reservation.member === currentUser && (
+                                                {(reservation.member === currentUser || isAdmin) && (
                                                     <button
                                                         className="delete-btn"
-                                                        onClick={() => handleDelete(reservation.id)}
+                                                        onClick={() => isAdmin ? handleAdminDeleteReservation(reservation.id) : handleDelete(reservation.id)}
                                                     >
                                                         削除
                                                     </button>
@@ -1139,8 +1665,8 @@
                                             value={formData.member}
                                             onChange={(e) => setFormData({...formData, member: e.target.value})}
                                         >
-                                            {FAMILY_MEMBERS.map(member => (
-                                                <option key={member} value={member}>{member}</option>
+                                            {members.map(member => (
+                                                <option key={member.id} value={member.name}>{member.name}</option>
                                             ))}
                                         </select>
                                     </div>
@@ -1209,8 +1735,6 @@
                                     </button>
                                 </form>
                             </div>
-
-                            
                         </div>
                     </div>
                 </div>
