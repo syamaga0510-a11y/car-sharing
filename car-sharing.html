@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>家族カーシェア管理</title>
+    <script src="https://cdn.jsdelivr.net/npm/react@18/umd/react.production.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@babel/standalone/babel.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2d5f8d;
+            --primary-light: #4a8bc2;
+            --secondary: #f39c12;
+            --bg: #f8f9fc;
+            --card-bg: #ffffff;
+            --text: #1a1a2e;
+            --text-light: #6c757d;
+            --border: #e1e8ed;
+            --success: #27ae60;
+            --shadow: 0 4px 6px rgba(0,0,0,0.07);
+            --shadow-lg: 0 10px 30px rgba(0,0,0,0.12);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--text);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: slideDown 0.5s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .car-icon {
+            font-size: 2.5rem;
+        }
+
+        .date-display {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.1rem;
+            color: var(--text-light);
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 30px;
+            animation: fadeIn 0.6s ease 0.2s both;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .calendar-section {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .calendar-header h2 {
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .nav-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+        }
+
+        .day-header {
+            text-align: center;
+            font-weight: 600;
+            padding: 15px 5px;
+            color: var(--primary);
+            font-size: 0.9rem;
+        }
+
+        .day-header.sunday {
+            color: #e74c3c;
+        }
+
+        .day-header.saturday {
+            color: #3498db;
+        }
+
+        .day-cell {
+            aspect-ratio: 1;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            background: var(--bg);
+        }
+
+        .day-cell:hover {
+            border-color: var(--primary);
+            transform: scale(1.05);
+            box-shadow: var(--shadow);
+        }
+
+        .day-cell.other-month {
+            opacity: 0.3;
+        }
+
+        .day-cell.selected {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .day-cell.today {
+            background: #fff3cd;
+            border-color: var(--secondary);
+            font-weight: 700;
+        }
+
+        .day-cell.today.selected {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .day-cell.sunday .day-number {
+            color: #e74c3c;
+        }
+
+        .day-cell.saturday .day-number {
+            color: #3498db;
+        }
+
+        .day-cell.sunday.selected .day-number,
+        .day-cell.saturday.selected .day-number {
+            color: white;
+        }
+
+        .day-number {
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 5px;
+        }
+
+        .day-reservations {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            margin-top: 5px;
+        }
+
+        .reservation-indicator {
+            width: 100%;
+            height: 4px;
+            border-radius: 2px;
+            background: var(--secondary);
+        }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text);
+            font-size: 0.95rem;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(45, 95, 141, 0.1);
+        }
+
+        .btn-primary {
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 12px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .reservation-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .reservation-item {
+            padding: 15px;
+            background: var(--bg);
+            border-radius: 12px;
+            margin-bottom: 12px;
+            border-left: 4px solid var(--secondary);
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .reservation-item h4 {
+            font-size: 1.05rem;
+            margin-bottom: 8px;
+            color: var(--primary);
+        }
+
+        .reservation-detail {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-bottom: 4px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .reservation-price {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--success);
+            margin-top: 8px;
+        }
+
+        .delete-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .delete-btn:hover {
+            background: #c0392b;
+            transform: scale(1.05);
+        }
+
+        .family-members {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .member-tag {
+            padding: 8px 15px;
+            background: var(--bg);
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--primary);
+            border: 2px solid var(--border);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            padding: 20px;
+            border-radius: 12px;
+            color: white;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+
+        .calculation-display {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            border-left: 4px solid var(--secondary);
+        }
+
+        .calculation-display p {
+            margin: 5px 0;
+            font-size: 0.95rem;
+        }
+
+        @media (max-width: 1200px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .calendar {
+                gap: 5px;
+            }
+
+            .day-cell {
+                padding: 5px;
+            }
+        }
+
+        /* ログインモーダルのスタイル */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 400px;
+            width: 90%;
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-content h2 {
+            color: var(--primary);
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 1.8rem;
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .pin-input {
+            padding: 15px;
+            font-size: 1.5rem;
+            text-align: center;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            font-family: 'JetBrains Mono', monospace;
+            letter-spacing: 0.5em;
+        }
+
+        .pin-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .logout-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        const FAMILY_MEMBERS = ['父', '母', '颯太', '莉緒', '麻緒'];
+        
+        // 各メンバーのPINコード設定
+        const MEMBER_PINS = {
+            '父': '1234',
+            '母': '5678',
+            '颯太': '9012',
+            '莉緒': '3456',
+            '麻緒': '7890'
+        };
+
+        // Firebase設定（デモ用の公開設定 - 実際の使用時は独自の設定に変更してください）
+        const firebaseConfig = {
+            apiKey: "AIzaSyCd8tnYHwCY93tEXRhxPIjX9Dks2ly25MY",
+            authDomain: "family-car-share-8a1c4.firebaseapp.com",
+            databaseURL: "https://family-car-share-8a1c4-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "family-car-share-8a1c4",
+            storageBucket: "family-car-share-8a1c4.firebasestorage.app",
+            messagingSenderId: "61412197996",
+            appId: "1:61412197996:web:d65b24df6a1bb83519ba49",
+            measurementId: "G-C0CP5Z1ZND"
+        };
+
+        // Firebase初期化
+        let database;
+        let isFirebaseReady = false;
+        
+        try {
+            if (!firebase.apps.length) {
+                firebase.initializeApp(firebaseConfig);
+            }
+            database = firebase.database();
+            isFirebaseReady = true;
+        } catch (error) {
+            console.error('Firebase初期化エラー:', error);
+        }
+
+        const calculatePrice = (hours) => {
+            if (hours <= 1) {
+                return 500;
+            } else if (hours <= 3) {
+                return 1000;
+            } else if (hours <= 6) {
+                return 2000;
+            } else if (hours <= 12) {
+                return 2500;
+            } else if (hours <= 24) {
+                return 3000;
+            } else if (hours <= 48) {
+                return 6000;
+            } else {
+                // 48時間を超える場合: 6000円 + 24時間ごとに3000円
+                const extraHours = hours - 48;
+                const extraDays = Math.ceil(extraHours / 24);
+                return 6000 + (extraDays * 3000);
+            }
+        };
+
+        const CarSharingApp = () => {
+            const [currentDate, setCurrentDate] = useState(new Date());
+            const [selectedDate, setSelectedDate] = useState(new Date());
+            const [reservations, setReservations] = useState([]);
+            const [formData, setFormData] = useState(() => {
+                const today = new Date();
+                const year = today.getFullYear();
+                const month = String(today.getMonth() + 1).padStart(2, '0');
+                const day = String(today.getDate()).padStart(2, '0');
+                const localDateString = `${year}-${month}-${day}`;
+                
+                return {
+                    member: FAMILY_MEMBERS[0],
+                    date: localDateString,
+                    startHour: '12',
+                    startMinute: '00',
+                    endHour: '12',
+                    endMinute: '00'
+                };
+            });
+            const [calculatedPrice, setCalculatedPrice] = useState(null);
+            const [calculatedHours, setCalculatedHours] = useState(null);
+            const [isLoading, setIsLoading] = useState(true);
+            const [connectionStatus, setConnectionStatus] = useState('接続中...');
+            const [currentUser, setCurrentUser] = useState(null); // 現在ログインしているユーザー
+            const [isAuthenticated, setIsAuthenticated] = useState(false); // 認証状態
+            const [showLoginModal, setShowLoginModal] = useState(true); // ログインモーダルの表示状態
+            const [pinInput, setPinInput] = useState(''); // PIN入力値
+            const [selectedMemberForLogin, setSelectedMemberForLogin] = useState(FAMILY_MEMBERS[0]); // ログイン対象メンバー
+
+            // localStorageから認証情報を復元
+            useEffect(() => {
+                const savedUser = localStorage.getItem('authenticatedUser');
+                if (savedUser && FAMILY_MEMBERS.includes(savedUser)) {
+                    setCurrentUser(savedUser);
+                    setIsAuthenticated(true);
+                    setShowLoginModal(false);
+                }
+            }, []);
+
+            // Firebaseからのリアルタイムデータ監視
+            useEffect(() => {
+                if (!isFirebaseReady) {
+                    setConnectionStatus('Firebase設定が必要です');
+                    setIsLoading(false);
+                    return;
+                }
+
+                const reservationsRef = database.ref('reservations');
+                
+                // リアルタイムリスナー設定
+                const listener = reservationsRef.on('value', (snapshot) => {
+                    const data = snapshot.val();
+                    if (data) {
+                        const reservationsList = Object.keys(data).map(key => ({
+                            ...data[key],
+                            id: key
+                        }));
+                        setReservations(reservationsList);
+                        setConnectionStatus('✅ 同期中');
+                    } else {
+                        setReservations([]);
+                        setConnectionStatus('✅ 接続済み');
+                    }
+                    setIsLoading(false);
+                }, (error) => {
+                    console.error('データ取得エラー:', error);
+                    setConnectionStatus('⚠️ 接続エラー');
+                    setIsLoading(false);
+                });
+
+                // 接続状態の監視
+                const connectedRef = database.ref('.info/connected');
+                connectedRef.on('value', (snapshot) => {
+                    if (snapshot.val() === true) {
+                        setConnectionStatus('✅ 同期中');
+                    } else {
+                        setConnectionStatus('⚠️ オフライン');
+                    }
+                });
+
+                // クリーンアップ
+                return () => {
+                    reservationsRef.off('value', listener);
+                    connectedRef.off();
+                };
+            }, []);
+
+            useEffect(() => {
+                if (formData.startHour !== '' && formData.startMinute !== '' && 
+                    formData.endHour !== '' && formData.endMinute !== '') {
+                    
+                    const startTime = `${formData.startHour}:${formData.startMinute}`;
+                    const endTime = `${formData.endHour}:${formData.endMinute}`;
+                    
+                    const start = new Date(`2000-01-01T${startTime}`);
+                    const end = new Date(`2000-01-01T${endTime}`);
+                    
+                    if (end > start) {
+                        const diffMs = end - start;
+                        const diffHours = diffMs / (1000 * 60 * 60);
+                        const price = calculatePrice(diffHours);
+                        setCalculatedHours(diffHours);
+                        setCalculatedPrice(price);
+                    } else {
+                        setCalculatedPrice(null);
+                        setCalculatedHours(null);
+                    }
+                } else {
+                    setCalculatedPrice(null);
+                    setCalculatedHours(null);
+                }
+            }, [formData.startHour, formData.startMinute, formData.endHour, formData.endMinute]);
+
+            // カレンダーで選択した日付をフォームに反映
+            useEffect(() => {
+                // ローカルタイムゾーンで日付文字列を取得（UTC変換による1日ずれを防ぐ）
+                const year = selectedDate.getFullYear();
+                const month = String(selectedDate.getMonth() + 1).padStart(2, '0');
+                const day = String(selectedDate.getDate()).padStart(2, '0');
+                const localDateString = `${year}-${month}-${day}`;
+                
+                setFormData(prev => ({
+                    ...prev,
+                    date: localDateString
+                }));
+            }, [selectedDate]);
+
+            // 現在のユーザーが変更されたときにフォームの使用者も更新
+            useEffect(() => {
+                if (currentUser) {
+                    setFormData(prev => ({
+                        ...prev,
+                        member: currentUser
+                    }));
+                }
+            }, [currentUser]);
+
+            const getDaysInMonth = (date) => {
+                const year = date.getFullYear();
+                const month = date.getMonth();
+                const firstDay = new Date(year, month, 1);
+                const lastDay = new Date(year, month + 1, 0);
+                const daysInMonth = lastDay.getDate();
+                const startingDayOfWeek = firstDay.getDay();
+
+                const days = [];
+
+                // Previous month days
+                const prevMonthLastDay = new Date(year, month, 0).getDate();
+                for (let i = startingDayOfWeek - 1; i >= 0; i--) {
+                    days.push({
+                        date: new Date(year, month - 1, prevMonthLastDay - i),
+                        isCurrentMonth: false
+                    });
+                }
+
+                // Current month days
+                for (let i = 1; i <= daysInMonth; i++) {
+                    days.push({
+                        date: new Date(year, month, i),
+                        isCurrentMonth: true
+                    });
+                }
+
+                // Next month days
+                const remainingDays = 42 - days.length;
+                for (let i = 1; i <= remainingDays; i++) {
+                    days.push({
+                        date: new Date(year, month + 1, i),
+                        isCurrentMonth: false
+                    });
+                }
+
+                return days;
+            };
+
+            const handlePrevMonth = () => {
+                setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1));
+            };
+
+            const handleNextMonth = () => {
+                setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1));
+            };
+
+            // ログイン処理
+            const handleLogin = (e) => {
+                e.preventDefault();
+                if (MEMBER_PINS[selectedMemberForLogin] === pinInput) {
+                    setCurrentUser(selectedMemberForLogin);
+                    setIsAuthenticated(true);
+                    setShowLoginModal(false);
+                    localStorage.setItem('authenticatedUser', selectedMemberForLogin);
+                    setPinInput('');
+                    alert(`${selectedMemberForLogin}としてログインしました`);
+                } else {
+                    alert('PINコードが正しくありません');
+                    setPinInput('');
+                }
+            };
+
+            // ログアウト処理
+            const handleLogout = () => {
+                if (window.confirm('ログアウトしますか？')) {
+                    setCurrentUser(null);
+                    setIsAuthenticated(false);
+                    setShowLoginModal(true);
+                    localStorage.removeItem('authenticatedUser');
+                    setPinInput('');
+                }
+            };
+
+            const handleSubmit = async (e) => {
+                e.preventDefault();
+                if (!formData.date || formData.startHour === '' || formData.startMinute === '' || 
+                    formData.endHour === '' || formData.endMinute === '' || !calculatedPrice) {
+                    alert('日付、開始時刻、終了時刻を正しく入力してください。');
+                    return;
+                }
+
+                if (!isFirebaseReady) {
+                    alert('Firebase設定が必要です。下部の設定ガイドをご確認ください。');
+                    return;
+                }
+
+                const startTime = `${formData.startHour}:${formData.startMinute}`;
+                const endTime = `${formData.endHour}:${formData.endMinute}`;
+
+                // 時間の重複チェック
+                const existingReservations = reservations.filter(r => r.date === formData.date);
+                
+                const parseTime = (timeStr) => {
+                    const [hours, minutes] = timeStr.split(':').map(Number);
+                    return hours * 60 + minutes;
+                };
+
+                const newStartMinutes = parseTime(startTime);
+                const newEndMinutes = parseTime(endTime);
+
+                // 重複チェック
+                const hasConflict = existingReservations.some(reservation => {
+                    const existingStartMinutes = parseTime(reservation.startTime);
+                    const existingEndMinutes = parseTime(reservation.endTime);
+                    
+                    // 重複判定: 新規予約の開始時刻が既存予約の時間内、または新規予約の終了時刻が既存予約の時間内、
+                    // または新規予約が既存予約を完全に含む場合
+                    return (
+                        (newStartMinutes < existingEndMinutes && newEndMinutes > existingStartMinutes)
+                    );
+                });
+
+                if (hasConflict) {
+                    alert('選択した時間帯は既に予約が入っています。別の時間帯を選択してください。');
+                    return;
+                }
+
+                const newReservation = {
+                    date: formData.date,
+                    member: formData.member,
+                    startTime: startTime,
+                    endTime: endTime,
+                    hours: calculatedHours,
+                    price: calculatedPrice,
+                    createdAt: firebase.database.ServerValue.TIMESTAMP
+                };
+
+                try {
+                    await database.ref('reservations').push(newReservation);
+                    setFormData({
+                        member: currentUser,
+                        date: formData.date,
+                        startHour: '12',
+                        startMinute: '00',
+                        endHour: '12',
+                        endMinute: '00'
+                    });
+                    setCalculatedPrice(null);
+                    setCalculatedHours(null);
+                    alert('予約が完了しました！');
+                } catch (error) {
+                    console.error('予約追加エラー:', error);
+                    alert('予約の追加に失敗しました。Firebase設定を確認してください。');
+                }
+            };
+
+            const handleDelete = async (id) => {
+                if (!isFirebaseReady) {
+                    alert('Firebase設定が必要です。');
+                    return;
+                }
+
+                if (window.confirm('この予約を削除してもよろしいですか？')) {
+                    try {
+                        await database.ref(`reservations/${id}`).remove();
+                    } catch (error) {
+                        console.error('削除エラー:', error);
+                        alert('削除に失敗しました。');
+                    }
+                }
+            };
+
+            const getReservationsForDate = (date) => {
+                // ローカルタイムゾーンで日付文字列を取得（UTC変換による1日ずれを防ぐ）
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                const dateStr = `${year}-${month}-${day}`;
+                return reservations.filter(r => r.date === dateStr);
+            };
+
+            const selectedDateReservations = getReservationsForDate(selectedDate);
+            const formDateReservations = formData.date ? reservations.filter(r => r.date === formData.date) : [];
+
+            const days = getDaysInMonth(currentDate);
+            const weekDays = ['日', '月', '火', '水', '木', '金', '土'];
+
+            if (isLoading) {
+                return (
+                    <div className="container">
+                        <div className="header">
+                            <h1>
+                                <span className="car-icon">🚗</span>
+                                家族カーシェア管理
+                            </h1>
+                        </div>
+                        <div style={{
+                            background: 'white',
+                            padding: '50px',
+                            borderRadius: '20px',
+                            textAlign: 'center',
+                            fontSize: '1.2rem',
+                            color: 'var(--text-light)'
+                        }}>
+                            データを読み込み中...
+                        </div>
+                    </div>
+                );
+            }
+
+            return (
+                <>
+                    {showLoginModal && (
+                        <div className="modal-overlay">
+                            <div className="modal-content">
+                                <h2>🔐 ログイン</h2>
+                                <form onSubmit={handleLogin} className="login-form">
+                                    <div className="form-group">
+                                        <label>使用者を選択</label>
+                                        <select
+                                            value={selectedMemberForLogin}
+                                            onChange={(e) => setSelectedMemberForLogin(e.target.value)}
+                                            style={{
+                                                width: '100%',
+                                                padding: '12px',
+                                                fontSize: '1rem',
+                                                borderRadius: '10px',
+                                                border: '2px solid var(--border)',
+                                                fontFamily: 'Outfit, sans-serif'
+                                            }}
+                                        >
+                                            {FAMILY_MEMBERS.map(member => (
+                                                <option key={member} value={member}>{member}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                    <div className="form-group">
+                                        <label>4桁のPINコード</label>
+                                        <input
+                                            type="password"
+                                            className="pin-input"
+                                            value={pinInput}
+                                            onChange={(e) => setPinInput(e.target.value)}
+                                            maxLength="4"
+                                            pattern="[0-9]{4}"
+                                            placeholder="••••"
+                                            required
+                                            autoFocus
+                                        />
+                                    </div>
+                                    <button type="submit" className="btn-primary" style={{marginTop: '10px'}}>
+                                        ログイン
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    )}
+                    
+                    <div className="container">
+                    <div className="header">
+                        <h1>
+                            <span className="car-icon">🚗</span>
+                            家族カーシェア管理
+                        </h1>
+                        <div style={{display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '10px'}}>
+                            <div style={{display: 'flex', alignItems: 'center', gap: '10px'}}>
+                                <span style={{fontSize: '0.95rem', color: 'var(--text)', fontWeight: '600'}}>
+                                    ログイン中: <span style={{color: 'var(--primary)', fontSize: '1.1rem'}}>{currentUser}</span>
+                                </span>
+                                <button className="logout-btn" onClick={handleLogout}>
+                                    ログアウト
+                                </button>
+                            </div>
+                            <div className="date-display">
+                                {new Date().toLocaleDateString('ja-JP', {
+                                    year: 'numeric',
+                                    month: 'long',
+                                    day: 'numeric',
+                                    weekday: 'long'
+                                })}
+                            </div>
+                            <div style={{fontSize: '0.85rem', color: connectionStatus.includes('✅') ? '#27ae60' : '#e74c3c', display: 'flex', alignItems: 'center', gap: '5px'}}>
+                                {connectionStatus}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="main-content">
+                        <div className="calendar-section">
+                            <div className="calendar-header">
+                                <h2>
+                                    {currentDate.getFullYear()}年 {currentDate.getMonth() + 1}月
+                                </h2>
+                                <div className="nav-buttons">
+                                    <button className="nav-btn" onClick={handlePrevMonth}>
+                                        ← 前月
+                                    </button>
+                                    <button className="nav-btn" onClick={handleNextMonth}>
+                                        次月 →
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div className="calendar">
+                                {weekDays.map((day, index) => (
+                                    <div 
+                                        key={day} 
+                                        className={`day-header ${index === 0 ? 'sunday' : ''} ${index === 6 ? 'saturday' : ''}`}
+                                    >
+                                        {day}
+                                    </div>
+                                ))}
+                                {days.map((day, index) => {
+                                    const dayReservations = getReservationsForDate(day.date);
+                                    const isSelected = selectedDate.toDateString() === day.date.toDateString();
+                                    const isToday = new Date().toDateString() === day.date.toDateString();
+                                    const dayOfWeek = day.date.getDay();
+                                    const isSunday = dayOfWeek === 0;
+                                    const isSaturday = dayOfWeek === 6;
+                                    
+                                    return (
+                                        <div
+                                            key={index}
+                                            className={`day-cell 
+                                                ${!day.isCurrentMonth ? 'other-month' : ''} 
+                                                ${isSelected ? 'selected' : ''} 
+                                                ${isToday ? 'today' : ''}
+                                                ${isSunday ? 'sunday' : ''}
+                                                ${isSaturday ? 'saturday' : ''}`}
+                                            onClick={() => setSelectedDate(day.date)}
+                                        >
+                                            <div className="day-number">{day.date.getDate()}</div>
+                                            <div className="day-reservations">
+                                                {dayReservations.slice(0, 3).map((res, i) => (
+                                                    <div key={i} className="reservation-indicator" />
+                                                ))}
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
+
+                        <div className="sidebar">
+                            <div className="card">
+                                <h3>
+                                    {selectedDate.toDateString() === new Date().toDateString() 
+                                        ? '📅 本日の予約状況' 
+                                        : `📅 ${selectedDate.getMonth() + 1}/${selectedDate.getDate()}の予約状況`}
+                                </h3>
+                                <div className="reservation-list" style={{maxHeight: '300px'}}>
+                                    {selectedDateReservations.length === 0 ? (
+                                        <p style={{color: 'var(--text-light)', textAlign: 'center', padding: '20px'}}>
+                                            予約がありません
+                                        </p>
+                                    ) : (
+                                        selectedDateReservations.map(reservation => (
+                                            <div key={reservation.id} className="reservation-item">
+                                                <h4>{reservation.member}</h4>
+                                                <div className="reservation-detail">
+                                                    {reservation.startTime} - {reservation.endTime}
+                                                </div>
+                                                <div className="reservation-detail">
+                                                    使用時間: {reservation.hours.toFixed(2)}時間
+                                                </div>
+                                                <div className="reservation-price">
+                                                    ¥{reservation.price.toLocaleString()}
+                                                </div>
+                                                {reservation.member === currentUser && (
+                                                    <button
+                                                        className="delete-btn"
+                                                        onClick={() => handleDelete(reservation.id)}
+                                                    >
+                                                        削除
+                                                    </button>
+                                                )}
+                                            </div>
+                                        ))
+                                    )}
+                                </div>
+                            </div>
+
+                            <div className="card">
+                                <h3>➕ 新規予約</h3>
+                                <form onSubmit={handleSubmit}>
+                                    <div className="form-group">
+                                        <label>使用日</label>
+                                        <div style={{display: 'flex', alignItems: 'center', gap: '10px'}}>
+                                            <input
+                                                type="date"
+                                                value={formData.date}
+                                                onChange={(e) => setFormData({...formData, date: e.target.value})}
+                                                required
+                                                style={{flex: 1}}
+                                            />
+                                            {formData.date && (
+                                                <span style={{
+                                                    color: 'var(--text-light)', 
+                                                    fontSize: '1rem',
+                                                    fontWeight: '500',
+                                                    minWidth: '40px'
+                                                }}>
+                                                    ({new Date(formData.date + 'T00:00:00').toLocaleDateString('ja-JP', { weekday: 'short' })})
+                                                </span>
+                                            )}
+                                        </div>
+                                    </div>
+                                    <div className="form-group">
+                                        <label>使用者</label>
+                                        <select
+                                            value={formData.member}
+                                            onChange={(e) => setFormData({...formData, member: e.target.value})}
+                                        >
+                                            {FAMILY_MEMBERS.map(member => (
+                                                <option key={member} value={member}>{member}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                    <div className="form-group">
+                                        <label>開始時刻</label>
+                                        <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px'}}>
+                                            <select
+                                                value={formData.startHour}
+                                                onChange={(e) => setFormData({...formData, startHour: e.target.value})}
+                                                required
+                                            >
+                                                {Array.from({length: 24}, (_, i) => (
+                                                    <option key={i} value={String(i).padStart(2, '0')}>
+                                                        {String(i).padStart(2, '0')}時
+                                                    </option>
+                                                ))}
+                                            </select>
+                                            <select
+                                                value={formData.startMinute}
+                                                onChange={(e) => setFormData({...formData, startMinute: e.target.value})}
+                                                required
+                                            >
+                                                <option value="00">00分</option>
+                                                <option value="15">15分</option>
+                                                <option value="30">30分</option>
+                                                <option value="45">45分</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div className="form-group">
+                                        <label>終了時刻</label>
+                                        <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px'}}>
+                                            <select
+                                                value={formData.endHour}
+                                                onChange={(e) => setFormData({...formData, endHour: e.target.value})}
+                                                required
+                                            >
+                                                {Array.from({length: 24}, (_, i) => (
+                                                    <option key={i} value={String(i).padStart(2, '0')}>
+                                                        {String(i).padStart(2, '0')}時
+                                                    </option>
+                                                ))}
+                                            </select>
+                                            <select
+                                                value={formData.endMinute}
+                                                onChange={(e) => setFormData({...formData, endMinute: e.target.value})}
+                                                required
+                                            >
+                                                <option value="00">00分</option>
+                                                <option value="15">15分</option>
+                                                <option value="30">30分</option>
+                                                <option value="45">45分</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    {calculatedPrice !== null && (
+                                        <div className="calculation-display">
+                                            <p><strong>使用時間:</strong> {calculatedHours.toFixed(2)}時間</p>
+                                            <p><strong>料金:</strong> ¥{calculatedPrice.toLocaleString()}</p>
+                                        </div>
+                                    )}
+
+                                    <button type="submit" className="btn-primary">
+                                        予約を追加
+                                    </button>
+                                </form>
+                            </div>
+
+                            
+                        </div>
+                    </div>
+                </div>
+                </>
+            );
+        };
+
+        ReactDOM.render(<CarSharingApp />, document.getElementById('root'));
+    </script>
+</body>
+</html>
