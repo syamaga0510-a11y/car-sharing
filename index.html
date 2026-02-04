@@ -917,11 +917,16 @@
                 const day = String(selectedDate.getDate()).padStart(2, '0');
                 const localDateString = `${year}-${month}-${day}`;
                 
-                setFormData(prev => ({
-                    ...prev,
-                    startDate: localDateString,
-                    endDate: localDateString
-                }));
+                setFormData(prev => {
+                    // 開始日を更新
+                    // 終了日が開始日より前の場合は、終了日も開始日に合わせる
+                    const newEndDate = prev.endDate < localDateString ? localDateString : prev.endDate;
+                    return {
+                        ...prev,
+                        startDate: localDateString,
+                        endDate: newEndDate
+                    };
+                });
             }, [selectedDate]);
 
             // 現在のユーザーが変更されたときにフォームの使用者も更新
@@ -1768,7 +1773,15 @@
                                             <input
                                                 type="date"
                                                 value={formData.startDate}
-                                                onChange={(e) => setFormData({...formData, startDate: e.target.value})}
+                                                onChange={(e) => {
+                                                    const newStartDate = e.target.value;
+                                                    setFormData(prev => ({
+                                                        ...prev,
+                                                        startDate: newStartDate,
+                                                        // 終了日が開始日より前の場合は、終了日も開始日に合わせる
+                                                        endDate: prev.endDate < newStartDate ? newStartDate : prev.endDate
+                                                    }));
+                                                }}
                                                 required
                                                 style={{flex: 1}}
                                             />
@@ -1814,6 +1827,7 @@
                                                 type="date"
                                                 value={formData.endDate}
                                                 onChange={(e) => setFormData({...formData, endDate: e.target.value})}
+                                                min={formData.startDate}
                                                 required
                                                 style={{flex: 1}}
                                             />
