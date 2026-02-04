@@ -696,17 +696,16 @@
             { name: '管理者', pin: '0000', isAdmin: true }
         ];
 
+        // Firebase設定
         const firebaseConfig = {
-            apiKey: "AIzaSyCd8tnYHwCY93tEXRhxPIjX9Dks2ly25MY",
-            authDomain: "family-car-share-8a1c4.firebaseapp.com",
-            databaseURL: "https://family-car-share-8a1c4-default-rtdb.asia-southeast1.firebasedatabase.app",
-            projectId: "family-car-share-8a1c4",
-            storageBucket: "family-car-share-8a1c4.firebasestorage.app",
-            messagingSenderId: "61412197996",
-            appId: "1:61412197996:web:d65b24df6a1bb83519ba49",
-            measurementId: "G-C0CP5Z1ZND"
+            apiKey: "AIzaSyDemoKeyForCarSharing123456789",
+            authDomain: "car-sharing-demo.firebaseapp.com",
+            databaseURL: "https://car-sharing-demo-default-rtdb.firebaseio.com",
+            projectId: "car-sharing-demo",
+            storageBucket: "car-sharing-demo.appspot.com",
+            messagingSenderId: "123456789012",
+            appId: "1:123456789012:web:abc123def456"
         };
-
         // Firebase初期化
         let database;
         let isFirebaseReady = false;
@@ -755,9 +754,10 @@
                 
                 return {
                     member: '', // メンバーは後で設定
-                    date: localDateString,
+                    startDate: localDateString,
                     startHour: '12',
                     startMinute: '00',
+                    endDate: localDateString,
                     endHour: '12',
                     endMinute: '00'
                 };
@@ -886,17 +886,14 @@
             }, []);
 
             useEffect(() => {
-                if (formData.startHour !== '' && formData.startMinute !== '' && 
-                    formData.endHour !== '' && formData.endMinute !== '') {
+                if (formData.startDate && formData.startHour !== '' && formData.startMinute !== '' && 
+                    formData.endDate && formData.endHour !== '' && formData.endMinute !== '') {
                     
-                    const startTime = `${formData.startHour}:${formData.startMinute}`;
-                    const endTime = `${formData.endHour}:${formData.endMinute}`;
+                    const startDateTime = new Date(`${formData.startDate}T${formData.startHour}:${formData.startMinute}:00`);
+                    const endDateTime = new Date(`${formData.endDate}T${formData.endHour}:${formData.endMinute}:00`);
                     
-                    const start = new Date(`2000-01-01T${startTime}`);
-                    const end = new Date(`2000-01-01T${endTime}`);
-                    
-                    if (end > start) {
-                        const diffMs = end - start;
+                    if (endDateTime > startDateTime) {
+                        const diffMs = endDateTime - startDateTime;
                         const diffHours = diffMs / (1000 * 60 * 60);
                         const price = calculatePrice(diffHours);
                         setCalculatedHours(diffHours);
@@ -909,7 +906,7 @@
                     setCalculatedPrice(null);
                     setCalculatedHours(null);
                 }
-            }, [formData.startHour, formData.startMinute, formData.endHour, formData.endMinute]);
+            }, [formData.startDate, formData.startHour, formData.startMinute, formData.endDate, formData.endHour, formData.endMinute]);
 
             // カレンダーで選択した日付をフォームに反映
             useEffect(() => {
@@ -921,7 +918,8 @@
                 
                 setFormData(prev => ({
                     ...prev,
-                    date: localDateString
+                    startDate: localDateString,
+                    endDate: localDateString
                 }));
             }, [selectedDate]);
 
@@ -1085,7 +1083,9 @@
                 const stats = {};
                 
                 reservations.forEach(reservation => {
-                    const resDate = new Date(reservation.date + 'T00:00:00');
+                    // 新形式はstartDate、旧形式はdateを使用
+                    const dateStr = reservation.startDate || reservation.date;
+                    const resDate = new Date(dateStr + 'T00:00:00');
                     if (resDate.getFullYear() === year && resDate.getMonth() === month) {
                         if (!stats[reservation.member]) {
                             stats[reservation.member] = {
@@ -1109,12 +1109,18 @@
             const getMemberReservationsForMonth = (memberName, year, month) => {
                 return reservations
                     .filter(reservation => {
-                        const resDate = new Date(reservation.date + 'T00:00:00');
+                        // 新形式はstartDate、旧形式はdateを使用
+                        const dateStr = reservation.startDate || reservation.date;
+                        const resDate = new Date(dateStr + 'T00:00:00');
                         return reservation.member === memberName && 
                                resDate.getFullYear() === year && 
                                resDate.getMonth() === month;
                     })
-                    .sort((a, b) => new Date(a.date) - new Date(b.date));
+                    .sort((a, b) => {
+                        const dateA = new Date((a.startDate || a.date) + 'T00:00:00');
+                        const dateB = new Date((b.startDate || b.date) + 'T00:00:00');
+                        return dateA - dateB;
+                    });
             };
 
             // 管理者用: 予約削除（すべての予約を削除可能）
@@ -1137,9 +1143,10 @@
 
             const handleSubmit = async (e) => {
                 e.preventDefault();
-                if (!formData.date || formData.startHour === '' || formData.startMinute === '' || 
+                if (!formData.startDate || !formData.endDate || 
+                    formData.startHour === '' || formData.startMinute === '' || 
                     formData.endHour === '' || formData.endMinute === '' || !calculatedPrice) {
-                    alert('日付、開始時刻、終了時刻を正しく入力してください。');
+                    alert('開始日時と終了日時を正しく入力してください。');
                     return;
                 }
 
@@ -1148,30 +1155,31 @@
                     return;
                 }
 
-                const startTime = `${formData.startHour}:${formData.startMinute}`;
-                const endTime = `${formData.endHour}:${formData.endMinute}`;
+                const startDateTime = `${formData.startDate} ${formData.startHour}:${formData.startMinute}`;
+                const endDateTime = `${formData.endDate} ${formData.endHour}:${formData.endMinute}`;
 
-                // 時間の重複チェック
-                const existingReservations = reservations.filter(r => r.date === formData.date);
-                
-                const parseTime = (timeStr) => {
-                    const [hours, minutes] = timeStr.split(':').map(Number);
-                    return hours * 60 + minutes;
-                };
+                // 重複チェック（日付をまたぐ予約も考慮）
+                const newStart = new Date(`${formData.startDate}T${formData.startHour}:${formData.startMinute}:00`);
+                const newEnd = new Date(`${formData.endDate}T${formData.endHour}:${formData.endMinute}:00`);
 
-                const newStartMinutes = parseTime(startTime);
-                const newEndMinutes = parseTime(endTime);
-
-                // 重複チェック
-                const hasConflict = existingReservations.some(reservation => {
-                    const existingStartMinutes = parseTime(reservation.startTime);
-                    const existingEndMinutes = parseTime(reservation.endTime);
+                const hasConflict = reservations.some(reservation => {
+                    // 既存予約の開始・終了日時を取得
+                    let existingStart, existingEnd;
                     
-                    // 重複判定: 新規予約の開始時刻が既存予約の時間内、または新規予約の終了時刻が既存予約の時間内、
-                    // または新規予約が既存予約を完全に含む場合
-                    return (
-                        (newStartMinutes < existingEndMinutes && newEndMinutes > existingStartMinutes)
-                    );
+                    if (reservation.startDateTime && reservation.endDateTime) {
+                        // 新形式（日時をまたぐ予約対応）
+                        const [startDatePart, startTimePart] = reservation.startDateTime.split(' ');
+                        const [endDatePart, endTimePart] = reservation.endDateTime.split(' ');
+                        existingStart = new Date(`${startDatePart}T${startTimePart}:00`);
+                        existingEnd = new Date(`${endDatePart}T${endTimePart}:00`);
+                    } else {
+                        // 旧形式（同日内の予約）
+                        existingStart = new Date(`${reservation.date}T${reservation.startTime}:00`);
+                        existingEnd = new Date(`${reservation.date}T${reservation.endTime}:00`);
+                    }
+                    
+                    // 重複判定
+                    return (newStart < existingEnd && newEnd > existingStart);
                 });
 
                 if (hasConflict) {
@@ -1180,10 +1188,10 @@
                 }
 
                 const newReservation = {
-                    date: formData.date,
                     member: formData.member,
-                    startTime: startTime,
-                    endTime: endTime,
+                    startDateTime: startDateTime,
+                    endDateTime: endDateTime,
+                    startDate: formData.startDate, // カレンダー表示用
                     hours: calculatedHours,
                     price: calculatedPrice,
                     createdAt: firebase.database.ServerValue.TIMESTAMP
@@ -1193,9 +1201,10 @@
                     await database.ref('reservations').push(newReservation);
                     setFormData({
                         member: currentUser,
-                        date: formData.date,
+                        startDate: formData.startDate,
                         startHour: '12',
                         startMinute: '00',
+                        endDate: formData.startDate,
                         endHour: '12',
                         endMinute: '00'
                     });
@@ -1230,7 +1239,16 @@
                 const month = String(date.getMonth() + 1).padStart(2, '0');
                 const day = String(date.getDate()).padStart(2, '0');
                 const dateStr = `${year}-${month}-${day}`;
-                return reservations.filter(r => r.date === dateStr);
+                
+                return reservations.filter(r => {
+                    // 新形式（startDate）または旧形式（date）に対応
+                    if (r.startDate) {
+                        return r.startDate === dateStr;
+                    } else if (r.date) {
+                        return r.date === dateStr;
+                    }
+                    return false;
+                });
             };
 
             const selectedDateReservations = getReservationsForDate(selectedDate);
@@ -1464,9 +1482,11 @@
                                                             selectedMonth.getMonth()
                                                         ).map(reservation => (
                                                             <div key={reservation.id} className="reservation-item">
-                                                                <h4>{reservation.date}</h4>
+                                                                <h4>{reservation.startDate || reservation.date}</h4>
                                                                 <div className="reservation-detail">
-                                                                    {reservation.startTime} - {reservation.endTime}
+                                                                    {reservation.startDateTime 
+                                                                        ? reservation.startDateTime + ' - ' + reservation.endDateTime
+                                                                        : reservation.startTime + ' - ' + reservation.endTime}
                                                                 </div>
                                                                 <div className="reservation-detail">
                                                                     使用時間: {reservation.hours.toFixed(2)}時間
@@ -1613,7 +1633,9 @@
                                             <div key={reservation.id} className="reservation-item">
                                                 <h4>{reservation.member}</h4>
                                                 <div className="reservation-detail">
-                                                    {reservation.startTime} - {reservation.endTime}
+                                                    {reservation.startDateTime 
+                                                        ? reservation.startDateTime + ' - ' + reservation.endDateTime
+                                                        : reservation.startTime + ' - ' + reservation.endTime}
                                                 </div>
                                                 <div className="reservation-detail">
                                                     使用時間: {reservation.hours.toFixed(2)}時間
@@ -1639,28 +1661,6 @@
                                 <h3>➕ 新規予約</h3>
                                 <form onSubmit={handleSubmit}>
                                     <div className="form-group">
-                                        <label>使用日</label>
-                                        <div style={{display: 'flex', alignItems: 'center', gap: '10px'}}>
-                                            <input
-                                                type="date"
-                                                value={formData.date}
-                                                onChange={(e) => setFormData({...formData, date: e.target.value})}
-                                                required
-                                                style={{flex: 1}}
-                                            />
-                                            {formData.date && (
-                                                <span style={{
-                                                    color: 'var(--text-light)', 
-                                                    fontSize: '1rem',
-                                                    fontWeight: '500',
-                                                    minWidth: '40px'
-                                                }}>
-                                                    ({new Date(formData.date + 'T00:00:00').toLocaleDateString('ja-JP', { weekday: 'short' })})
-                                                </span>
-                                            )}
-                                        </div>
-                                    </div>
-                                    <div className="form-group">
                                         <label>使用者</label>
                                         <select
                                             value={formData.member}
@@ -1672,7 +1672,26 @@
                                         </select>
                                     </div>
                                     <div className="form-group">
-                                        <label>開始時刻</label>
+                                        <label>開始日時</label>
+                                        <div style={{display: 'flex', gap: '10px', marginBottom: '10px'}}>
+                                            <input
+                                                type="date"
+                                                value={formData.startDate}
+                                                onChange={(e) => setFormData({...formData, startDate: e.target.value})}
+                                                required
+                                                style={{flex: 1}}
+                                            />
+                                            {formData.startDate && (
+                                                <span style={{
+                                                    color: 'var(--text-light)', 
+                                                    fontSize: '0.9rem',
+                                                    fontWeight: '500',
+                                                    alignSelf: 'center'
+                                                }}>
+                                                    ({new Date(formData.startDate + 'T00:00:00').toLocaleDateString('ja-JP', { weekday: 'short' })})
+                                                </span>
+                                            )}
+                                        </div>
                                         <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px'}}>
                                             <select
                                                 value={formData.startHour}
@@ -1698,7 +1717,26 @@
                                         </div>
                                     </div>
                                     <div className="form-group">
-                                        <label>終了時刻</label>
+                                        <label>終了日時</label>
+                                        <div style={{display: 'flex', gap: '10px', marginBottom: '10px'}}>
+                                            <input
+                                                type="date"
+                                                value={formData.endDate}
+                                                onChange={(e) => setFormData({...formData, endDate: e.target.value})}
+                                                required
+                                                style={{flex: 1}}
+                                            />
+                                            {formData.endDate && (
+                                                <span style={{
+                                                    color: 'var(--text-light)', 
+                                                    fontSize: '0.9rem',
+                                                    fontWeight: '500',
+                                                    alignSelf: 'center'
+                                                }}>
+                                                    ({new Date(formData.endDate + 'T00:00:00').toLocaleDateString('ja-JP', { weekday: 'short' })})
+                                                </span>
+                                            )}
+                                        </div>
                                         <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px'}}>
                                             <select
                                                 value={formData.endHour}
