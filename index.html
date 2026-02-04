@@ -775,6 +775,7 @@
             const [showMemberManagement, setShowMemberManagement] = useState(false); // メンバー管理モーダル
             const [newMemberName, setNewMemberName] = useState(''); // 新規メンバー名
             const [newMemberPin, setNewMemberPin] = useState(''); // 新規メンバーPIN
+            const [newMemberIsAdmin, setNewMemberIsAdmin] = useState(false); // 新規メンバーの管理者フラグ
             const [isAdmin, setIsAdmin] = useState(false); // 管理者かどうか
             const [showAdminMode, setShowAdminMode] = useState(false); // 管理者モード表示
             const [selectedMonth, setSelectedMonth] = useState(new Date()); // 統計表示用の月
@@ -1034,10 +1035,12 @@
                 try {
                     await database.ref('members').push({
                         name: newMemberName,
-                        pin: newMemberPin
+                        pin: newMemberPin,
+                        isAdmin: newMemberIsAdmin
                     });
                     setNewMemberName('');
                     setNewMemberPin('');
+                    setNewMemberIsAdmin(false);
                     alert('メンバーを追加しました');
                 } catch (error) {
                     console.error('メンバー追加エラー:', error);
@@ -1074,6 +1077,32 @@
                     } catch (error) {
                         console.error('メンバー削除エラー:', error);
                         alert('メンバーの削除に失敗しました');
+                    }
+                }
+            };
+
+            // 管理者権限の付与・解除（管理者のみ）
+            const handleToggleAdmin = async (memberId, memberName, makeAdmin) => {
+                if (!isAdmin) {
+                    alert('管理者権限の変更は管理者のみ実行できます');
+                    return;
+                }
+
+                const action = makeAdmin ? '管理者に昇格' : '管理者権限を解除';
+                const confirmMsg = `${memberName}を${action}してもよろしいですか？`;
+                
+                if (window.confirm(confirmMsg)) {
+                    try {
+                        const member = members.find(m => m.id === memberId);
+                        await database.ref(`members/${memberId}`).update({
+                            name: member.name,
+                            pin: member.pin,
+                            isAdmin: makeAdmin
+                        });
+                        alert(`${memberName}を${action}しました`);
+                    } catch (error) {
+                        console.error('管理者権限変更エラー:', error);
+                        alert('管理者権限の変更に失敗しました');
                     }
                 }
             };
@@ -1341,13 +1370,57 @@
                                 <div className="member-list">
                                     {members.map(member => (
                                         <div key={member.id} className="member-item">
-                                            <span className="member-name">{member.name}</span>
-                                            <button 
-                                                className="delete-member-btn"
-                                                onClick={() => handleDeleteMember(member.id, member.name)}
-                                            >
-                                                削除
-                                            </button>
+                                            <div style={{display: 'flex', alignItems: 'center', gap: '10px', flex: 1}}>
+                                                <span className="member-name">{member.name}</span>
+                                                {member.isAdmin && (
+                                                    <span style={{
+                                                        background: 'linear-gradient(135deg, #f39c12, #e67e22)',
+                                                        color: 'white',
+                                                        padding: '3px 10px',
+                                                        borderRadius: '12px',
+                                                        fontSize: '0.8rem',
+                                                        fontWeight: '600'
+                                                    }}>
+                                                        👑 管理者
+                                                    </span>
+                                                )}
+                                            </div>
+                                            <div style={{display: 'flex', gap: '8px'}}>
+                                                {isAdmin && !member.isAdmin && (
+                                                    <button 
+                                                        className="btn-primary"
+                                                        style={{
+                                                            padding: '8px 15px',
+                                                            fontSize: '0.85rem',
+                                                            background: 'var(--secondary)'
+                                                        }}
+                                                        onClick={() => handleToggleAdmin(member.id, member.name, true)}
+                                                    >
+                                                        管理者に昇格
+                                                    </button>
+                                                )}
+                                                {isAdmin && member.isAdmin && member.name !== currentUser && (
+                                                    <button 
+                                                        className="btn-primary"
+                                                        style={{
+                                                            padding: '8px 15px',
+                                                            fontSize: '0.85rem',
+                                                            background: 'var(--text-light)'
+                                                        }}
+                                                        onClick={() => handleToggleAdmin(member.id, member.name, false)}
+                                                    >
+                                                        管理者解除
+                                                    </button>
+                                                )}
+                                                {isAdmin && (
+                                                    <button 
+                                                        className="delete-member-btn"
+                                                        onClick={() => handleDeleteMember(member.id, member.name)}
+                                                    >
+                                                        削除
+                                                    </button>
+                                                )}
+                                            </div>
                                         </div>
                                     ))}
                                 </div>
@@ -1385,6 +1458,23 @@
                                             required
                                         />
                                     </div>
+                                    {isAdmin && (
+                                        <div className="form-group">
+                                            <label style={{display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer'}}>
+                                                <input
+                                                    type="checkbox"
+                                                    checked={newMemberIsAdmin}
+                                                    onChange={(e) => setNewMemberIsAdmin(e.target.checked)}
+                                                    style={{
+                                                        width: '20px',
+                                                        height: '20px',
+                                                        cursor: 'pointer'
+                                                    }}
+                                                />
+                                                <span>👑 管理者権限を付与する</span>
+                                            </label>
+                                        </div>
+                                    )}
                                     <div style={{display: 'flex', gap: '10px', marginTop: '10px'}}>
                                         <button type="submit" className="btn-primary" style={{flex: 1}}>
                                             メンバーを追加
@@ -1397,6 +1487,7 @@
                                                 setShowMemberManagement(false);
                                                 setNewMemberName('');
                                                 setNewMemberPin('');
+                                                setNewMemberIsAdmin(false);
                                             }}
                                         >
                                             閉じる
