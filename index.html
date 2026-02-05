@@ -93,7 +93,7 @@
             position: absolute; top: 130%; right: -50px; width: 320px;
             background: white; border-radius: 15px;
             box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-            z-index: 10000; padding: 15px; border: 1px solid var(--border);
+            z-index: 20000; padding: 15px; border: 1px solid var(--border);
             max-height: 400px;
             overflow-y: auto;
         }
@@ -1524,19 +1524,18 @@
                             <div style={{display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '10px', width: '100%'}}>
                                 <div style={{display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'flex-end', width: '100%'}}>
                                     
-                                    {/* Notification Bell */}
+{/* Notification Bell (ここから書き換え) */}
                                     <div className="notification-container">
                                         <button className="notification-btn" onClick={() => setShowNotifications(!showNotifications)}>
                                             🔔
                                             {notifications.length > 0 && <span className="badge">{notifications.length}</span>}
                                         </button>
-                                    
 
-                                        {/* Notification Dropdown - 独立表示 */}
+                                        {/* 通知メニューをボタンと同じ場所に配置し、確実に最前面(z-index: 20000)にする */}
                                         {showNotifications && (
                                             <>
-                                                <div className="modal-overlay" onClick={() => setShowNotifications(false)} style={{zIndex: 9999}}></div>
-                                                <div className="notification-dropdown" ref={notificationRef}>
+                                                <div className="modal-overlay" onClick={() => setShowNotifications(false)} style={{zIndex: 19999}}></div>
+                                                <div className="notification-dropdown" ref={notificationRef} style={{zIndex: 20000, right: window.innerWidth > 768 ? '0' : undefined}}>
                                                     <div className="notification-header">
                                                         {isAdmin ? '🔔 承認待ち一覧' : '🔔 未払い一覧'}
                                                     </div>
@@ -1567,6 +1566,7 @@
                                             </>
                                         )}
                                     </div>
+
                                     <span style={{marginRight: '10px', fontWeight: '600'}}>ログイン: <span style={{color:'var(--primary)'}}>{currentUser}</span></span>
                                     <button className="header-btn my-history-btn" onClick={() => setShowMyHistoryModal(true)}>👤 マイ履歴</button>
                                     {isAdmin && <button className="header-btn admin-mode-btn" onClick={() => setShowAdminMode(true)}>👑 管理者</button>}
