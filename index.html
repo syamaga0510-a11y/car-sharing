@@ -289,6 +289,9 @@
         @media (max-width: 768px) {
             body { padding: 10px; }
             
+            /* コンテナとヘッダーの横幅を統一 */
+            .container { padding: 0; }
+            
             /* ヘッダー調整 */
             .header { 
                 flex-direction: column; 
@@ -1057,7 +1060,7 @@
                                             {members.map(m => <option key={m.id} value={m.name}>{m.name}</option>)}
                                         </select>
                                     </div>
-                                    <input type="password" className="pin-input" value={pinInput} onChange={e => setPinInput(e.target.value)} maxLength="4" placeholder="••••" required autoFocus />
+                                    <input type="password" inputMode="numeric" pattern="[0-9]*" className="pin-input" value={pinInput} onChange={e => setPinInput(e.target.value)} maxLength="4" placeholder="••••" required autoFocus />
                                     <button type="submit" className="btn-primary">ログイン</button>
                                 </form>
                             </div>
@@ -1097,7 +1100,7 @@
                                 <h2>➕ 新規メンバー追加</h2>
                                 <form onSubmit={handleAddMember} className="login-form">
                                     <div className="form-group"><label>名前</label><input value={newMemberName} onChange={e => setNewMemberName(e.target.value)} required /></div>
-                                    <div className="form-group"><label>PIN (4桁)</label><input type="password" className="pin-input" value={newMemberPin} onChange={e => setNewMemberPin(e.target.value)} maxLength="4" required /></div>
+                                    <div className="form-group"><label>PIN (4桁)</label><input type="password" inputMode="numeric" pattern="[0-9]*" className="pin-input" value={newMemberPin} onChange={e => setNewMemberPin(e.target.value)} maxLength="4" required /></div>
                                     
                                     {isAdmin && (
                                         <div className="form-group">
