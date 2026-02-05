@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="ja" style="overflow-x: hidden;">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>家族カーシェア管理</title>
     <script src="https://cdn.jsdelivr.net/npm/react@18/umd/react.production.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/react-dom@18/umd/react-dom.production.min.js"></script>
@@ -37,16 +37,19 @@
             padding: 20px;
             color: var(--text);
             -webkit-font-smoothing: antialiased;
+            overflow-x: hidden; /* 横スクロール防止 */
         }
         
         button, input, select, textarea { font-family: 'Outfit', sans-serif; }
 
-        .container { max-width: 1400px; margin: 0 auto; width: 100%; }
+        .container { max-width: 1400px; margin: 0 auto; width: 100%; max-width: 100%; }
         .header {
             background: var(--card-bg); padding: 20px 30px; border-radius: 20px;
             margin-bottom: 30px; box-shadow: var(--shadow-lg);
             display: flex; justify-content: space-between; align-items: center;
             width: 100%;
+            max-width: 100%; /* 最大幅を親要素に合わせる */
+            box-sizing: border-box; /* パディングを含めた幅計算 */
         }
         
         .header-left { display: flex; align-items: center; gap: 20px; }
@@ -62,7 +65,14 @@
         }
         .car-icon { font-size: 2.5rem; }
         .date-display { font-family: monospace; font-size: 1.1rem; color: var(--text-light); }
-        .main-content { display: grid; grid-template-columns: 1fr 350px; gap: 30px; width: 100%; }
+        .main-content { 
+            display: grid; 
+            grid-template-columns: 1fr 350px; 
+            gap: 30px; 
+            width: 100%; 
+            max-width: 100%; /* 最大幅を親要素に合わせる */
+            box-sizing: border-box; /* パディングを含めた幅計算 */
+        }
         
         /* Notification Styles */
         .notification-container { position: relative; margin-right: 15px; display: flex; align-items: center; }
@@ -101,12 +111,26 @@
         .notif-actions { display: flex; justify-content: flex-end; margin-top: 5px; }
         
         /* Calendar Styles */
-        .calendar-section { background: var(--card-bg); padding: 30px; border-radius: 20px; box-shadow: var(--shadow-lg); }
+        .calendar-section { 
+            background: var(--card-bg); 
+            padding: 30px; 
+            border-radius: 20px; 
+            box-shadow: var(--shadow-lg); 
+            max-width: 100%; 
+            box-sizing: border-box;
+        }
         .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
         .calendar-header h2 { font-size: 1.5rem; color: var(--primary); }
         .nav-buttons { display: flex; gap: 10px; }
         .nav-btn { background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: 600; }
-        .calendar { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; }
+        .calendar { 
+            display: grid; 
+            grid-template-columns: repeat(7, 1fr); 
+            gap: 10px; 
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
+        }
         .day-header { text-align: center; font-weight: 600; padding: 15px 5px; color: var(--primary); font-size: 0.9rem; }
         .day-header.sunday { color: #e74c3c; }
         .day-header.saturday { color: #3498db; }
@@ -119,6 +143,7 @@
             position: relative; 
             background: var(--bg);
             min-height: 60px;
+            min-width: 0; /* グリッドが親要素に収まるように */
             display: flex;
             flex-direction: column;
             -webkit-tap-highlight-color: transparent;
@@ -138,8 +163,21 @@
         .reservation-indicator { width: 100%; height: 4px; border-radius: 2px; background: var(--secondary); }
 
         /* Sidebar & Forms */
-        .sidebar { display: flex; flex-direction: column; gap: 20px; }
-        .card { background: var(--card-bg); padding: 25px; border-radius: 20px; box-shadow: var(--shadow-lg); }
+        .sidebar { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 20px; 
+            max-width: 100%; 
+            box-sizing: border-box;
+        }
+        .card { 
+            background: var(--card-bg); 
+            padding: 25px; 
+            border-radius: 20px; 
+            box-shadow: var(--shadow-lg); 
+            max-width: 100%; 
+            box-sizing: border-box;
+        }
         .card h3 { font-size: 1.3rem; margin-bottom: 20px; color: var(--primary); }
         .form-group { margin-bottom: 20px; }
         .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: var(--text); font-size: 0.95rem; }
@@ -314,7 +352,8 @@
             /* 通知ドロップダウン */
             .notification-dropdown {
                 right: -20px;
-                width: 280px;
+                width: calc(100vw - 40px); /* 画面幅から余白を引いた幅 */
+                max-width: 320px;
             }
             .notification-dropdown::before {
                 right: 28px;
