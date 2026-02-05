@@ -323,6 +323,38 @@
         .calculation-display { background: #fff3cd; padding: 15px; border-radius: 10px; margin-top: 15px; border-left: 4px solid var(--secondary); }
         .calculation-display p { margin: 5px 0; font-size: 0.95rem; }
         
+        /* Toast Message */
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--primary);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            z-index: 10000;
+            font-weight: 600;
+            font-size: 1rem;
+            animation: slideDown 0.3s ease-out;
+            max-width: 90%;
+            text-align: center;
+        }
+        .toast.success { background: var(--success); }
+        .toast.error { background: var(--danger); }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+        
         /* ===== スマホ対応の強化 ===== */
         @media (max-width: 768px) {
             body { padding: 10px; }
@@ -619,6 +651,15 @@
         // ------------------------------------------------------------------
         // ▼ 重要：ここにあなたのFirebase設定を貼り付けてください ▼
         // ------------------------------------------------------------------
+        // 【設定方法】
+        // 1. Firebase Console (https://console.firebase.google.com/) にアクセス
+        // 2. プロジェクトを作成または選択
+        // 3. プロジェト設定 → 全般 → アプリを追加 → ウェブアプリ
+        // 4. 表示される firebaseConfig の値を以下に貼り付け
+        // 5. Realtime Database を有効化してください
+        // 
+        // ⚠️ 以下はデモ用の設定です。実際のプロジェクトでは動作しません！
+        // ------------------------------------------------------------------
         const firebaseConfig = {
             apiKey: "AIzaSyDemoKeyForCarSharing123456789", // ここを自分のキーに
             authDomain: "car-sharing-demo.firebaseapp.com",
@@ -675,6 +716,11 @@
             const [selectedMemberForLogin, setSelectedMemberForLogin] = useState('');
             const [members, setMembers] = useState([]);
             const [isAdmin, setIsAdmin] = useState(false);
+            
+            // Toast State
+            const [toastMessage, setToastMessage] = useState('');
+            const [toastType, setToastType] = useState('success'); // 'success' or 'error'
+            const [showToast, setShowToast] = useState(false);
 
             // Modals State
             const [showMemberListModal, setShowMemberListModal] = useState(false);
@@ -839,6 +885,16 @@
                     setCalculatedPrice(null); setCalculatedHours(null);
                 }
             }, [formData, priceSettings, calculatePrice]);
+            
+            // トーストメッセージを表示する関数
+            const showToastMessage = useCallback((message, type = 'success') => {
+                setToastMessage(message);
+                setToastType(type);
+                setShowToast(true);
+                setTimeout(() => {
+                    setShowToast(false);
+                }, 3000); // 3秒後に消える
+            }, []);
 
             useEffect(() => {
                 if (!rangeStart) return;
@@ -891,11 +947,12 @@
                     setShowLoginModal(false);
                     localStorage.setItem('authenticatedUser', selectedMemberForLogin);
                     setPinInput('');
-                    alert(`${selectedMemberForLogin}としてログインしました`);
+                    showToastMessage(`${selectedMemberForLogin}としてログインしました`, 'success');
                 } else {
-                    alert('PINコードが正しくありません'); setPinInput('');
+                    showToastMessage('PINコードが正しくありません', 'error');
+                    setPinInput('');
                 }
-            }, [members, selectedMemberForLogin, pinInput]);
+            }, [members, selectedMemberForLogin, pinInput, showToastMessage]);
 
             const handleLogout = useCallback(() => {
                 if (window.confirm('ログアウトしますか？')) {
@@ -921,13 +978,14 @@
                     setShowSwitchUserModal(false);
                     localStorage.setItem('authenticatedUser', switchToMember);
                     setPinInput('');
+                    const userName = switchToMember;
                     setSwitchToMember('');
-                    alert(`${switchToMember}に切り替えました`);
+                    showToastMessage(`${userName}に切り替えました`, 'success');
                 } else {
-                    alert('PINコードが正しくありません'); 
+                    showToastMessage('PINコードが正しくありません', 'error');
                     setPinInput('');
                 }
-            }, [members, switchToMember, pinInput]);
+            }, [members, switchToMember, pinInput, showToastMessage]);
 
             const updatePaymentStatus = useCallback(async (id, status) => {
                 try {
@@ -1113,21 +1171,59 @@
 
             return (
                 <>
+                    {/* Toast Message */}
+                    {showToast && (
+                        <div className={`toast ${toastType}`}>
+                            {toastMessage}
+                        </div>
+                    )}
+                    
                     {/* Login Modal */}
                     {showLoginModal && (
                         <div className="modal-overlay">
                             <div className="modal-content">
                                 <h2>🔐 ログイン</h2>
-                                <form onSubmit={handleLogin} className="login-form">
-                                    <div className="form-group">
-                                        <label>使用者を選択</label>
-                                        <select value={selectedMemberForLogin} onChange={(e) => setSelectedMemberForLogin(e.target.value)}>
-                                            {members.map(m => <option key={m.id} value={m.name}>{m.name}</option>)}
-                                        </select>
+                                
+                                {!isFirebaseReady && (
+                                    <div style={{padding: '20px', textAlign: 'center'}}>
+                                        <p style={{color: 'var(--danger)', marginBottom: '15px', fontWeight: '600'}}>
+                                            ⚠️ Firebase接続エラー
+                                        </p>
+                                        <p style={{fontSize: '0.9rem', color: 'var(--text-light)', lineHeight: '1.6'}}>
+                                            Firebase設定を確認してください。<br/>
+                                            コード内の firebaseConfig を<br/>
+                                            正しい設定に置き換える必要があります。
+                                        </p>
                                     </div>
-                                    <input type="password" inputMode="numeric" pattern="[0-9]*" className="pin-input" value={pinInput} onChange={e => setPinInput(e.target.value)} maxLength="4" placeholder="••••" required autoFocus />
-                                    <button type="submit" className="btn-primary">ログイン</button>
-                                </form>
+                                )}
+                                
+                                {isFirebaseReady && isLoading && (
+                                    <div style={{padding: '20px', textAlign: 'center'}}>
+                                        <p style={{color: 'var(--text-light)'}}>メンバー情報を読み込み中...</p>
+                                    </div>
+                                )}
+                                
+                                {isFirebaseReady && !isLoading && members.length === 0 && (
+                                    <div style={{padding: '20px', textAlign: 'center'}}>
+                                        <p style={{color: 'var(--danger)', marginBottom: '10px'}}>メンバーが登録されていません</p>
+                                        <p style={{fontSize: '0.85rem', color: 'var(--text-light)'}}>
+                                            Firebaseデータベースにメンバーを追加してください
+                                        </p>
+                                    </div>
+                                )}
+                                
+                                {isFirebaseReady && !isLoading && members.length > 0 && (
+                                    <form onSubmit={handleLogin} className="login-form">
+                                        <div className="form-group">
+                                            <label>使用者を選択</label>
+                                            <select value={selectedMemberForLogin} onChange={(e) => setSelectedMemberForLogin(e.target.value)}>
+                                                {members.map(m => <option key={m.id} value={m.name}>{m.name}</option>)}
+                                            </select>
+                                        </div>
+                                        <input type="password" inputMode="numeric" pattern="[0-9]*" className="pin-input" value={pinInput} onChange={e => setPinInput(e.target.value)} maxLength="4" placeholder="••••" required autoFocus />
+                                        <button type="submit" className="btn-primary">ログイン</button>
+                                    </form>
+                                )}
                             </div>
                         </div>
                     )}
