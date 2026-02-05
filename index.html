@@ -1530,43 +1530,43 @@
                                             🔔
                                             {notifications.length > 0 && <span className="badge">{notifications.length}</span>}
                                         </button>
-                                    </div>
+                                    
 
-                                    {/* Notification Dropdown - 独立表示 */}
-                                    {showNotifications && (
-                                        <>
-                                            <div className="modal-overlay" onClick={() => setShowNotifications(false)} style={{zIndex: 9999}}></div>
-                                            <div className="notification-dropdown" ref={notificationRef}>
-                                                <div className="notification-header">
-                                                    {isAdmin ? '🔔 承認待ち一覧' : '🔔 未払い一覧'}
-                                                </div>
-                                                {notifications.length === 0 ? (
-                                                    <div style={{textAlign:'center', padding:'10px', color:'var(--text-light)'}}>
-                                                        {isAdmin ? '承認待ちはありません' : '未払いはありません'}
+                                        {/* Notification Dropdown - 独立表示 */}
+                                        {showNotifications && (
+                                            <>
+                                                <div className="modal-overlay" onClick={() => setShowNotifications(false)} style={{zIndex: 9999}}></div>
+                                                <div className="notification-dropdown" ref={notificationRef}>
+                                                    <div className="notification-header">
+                                                        {isAdmin ? '🔔 承認待ち一覧' : '🔔 未払い一覧'}
                                                     </div>
-                                                ) : (
-                                                    notifications.map(n => (
-                                                        <div key={n.id} className="notification-item">
-                                                            <div className="notif-title">{n.member} - {n.startDate || n.date}</div>
-                                                            <div className="notif-desc">¥{n.price.toLocaleString()} ({n.hours.toFixed(1)}h)</div>
-                                                            <div className="notif-actions">
-                                                                {isAdmin ? (
-                                                                    <button className="confirm-btn" onClick={() => {
-                                                                        if(window.confirm('受取確認しますか？')) updatePaymentStatus(n.id, 'confirmed');
-                                                                    }}>受取確認</button>
-                                                                ) : (
-                                                                    <button className="pay-btn" onClick={() => {
-                                                                        if(window.confirm('支払い完了を通知しますか？')) updatePaymentStatus(n.id, 'pending');
-                                                                    }}>支払い完了</button>
-                                                                )}
-                                                            </div>
+                                                    {notifications.length === 0 ? (
+                                                        <div style={{textAlign:'center', padding:'10px', color:'var(--text-light)'}}>
+                                                            {isAdmin ? '承認待ちはありません' : '未払いはありません'}
                                                         </div>
-                                                    ))
-                                                )}
-                                            </div>
-                                        </>
-                                    )}
-
+                                                    ) : (
+                                                        notifications.map(n => (
+                                                            <div key={n.id} className="notification-item">
+                                                                <div className="notif-title">{n.member} - {n.startDate || n.date}</div>
+                                                                <div className="notif-desc">¥{n.price.toLocaleString()} ({n.hours.toFixed(1)}h)</div>
+                                                                <div className="notif-actions">
+                                                                    {isAdmin ? (
+                                                                        <button className="confirm-btn" onClick={() => {
+                                                                            if(window.confirm('受取確認しますか？')) updatePaymentStatus(n.id, 'confirmed');
+                                                                        }}>受取確認</button>
+                                                                    ) : (
+                                                                        <button className="pay-btn" onClick={() => {
+                                                                            if(window.confirm('支払い完了を通知しますか？')) updatePaymentStatus(n.id, 'pending');
+                                                                        }}>支払い完了</button>
+                                                                    )}
+                                                                </div>
+                                                            </div>
+                                                        ))
+                                                    )}
+                                                </div>
+                                            </>
+                                        )}
+                                    </div>
                                     <span style={{marginRight: '10px', fontWeight: '600'}}>ログイン: <span style={{color:'var(--primary)'}}>{currentUser}</span></span>
                                     <button className="header-btn my-history-btn" onClick={() => setShowMyHistoryModal(true)}>👤 マイ履歴</button>
                                     {isAdmin && <button className="header-btn admin-mode-btn" onClick={() => setShowAdminMode(true)}>👑 管理者</button>}
