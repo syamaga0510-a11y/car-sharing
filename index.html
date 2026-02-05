@@ -9,7 +9,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@babel/standalone/babel.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #2d5f8d;
@@ -25,8 +25,8 @@
             --btn-secondary-bg: #e2e8f0;
             --btn-secondary-text: #475569;
             --btn-secondary-hover: #cbd5e1;
-            --shadow: 0 4px 6px rgba(0,0,0,0.07);
-            --shadow-lg: 0 10px 30px rgba(0,0,0,0.12);
+            --shadow: 0 2px 4px rgba(0,0,0,0.1);
+            --shadow-lg: 0 4px 12px rgba(0,0,0,0.15);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -36,6 +36,7 @@
             min-height: 100vh;
             padding: 20px;
             color: var(--text);
+            -webkit-font-smoothing: antialiased;
         }
         
         button, input, select, textarea { font-family: 'Outfit', sans-serif; }
@@ -45,26 +46,21 @@
             background: var(--card-bg); padding: 20px 30px; border-radius: 20px;
             margin-bottom: 30px; box-shadow: var(--shadow-lg);
             display: flex; justify-content: space-between; align-items: center;
-            animation: slideDown 0.5s ease;
             width: 100%;
-            box-sizing: border-box;
         }
-        @keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
         
         .header-left { display: flex; align-items: center; gap: 20px; }
         .header h1 { font-size: 2.2rem; font-weight: 700; color: var(--primary); display: flex; align-items: center; gap: 10px; margin: 0; }
         .car-icon { font-size: 2.5rem; }
-        .date-display { font-family: 'JetBrains Mono', monospace; font-size: 1.1rem; color: var(--text-light); }
-        .main-content { display: grid; grid-template-columns: 1fr 350px; gap: 30px; animation: fadeIn 0.6s ease 0.2s both; width: 100%; box-sizing: border-box; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .date-display { font-family: monospace; font-size: 1.1rem; color: var(--text-light); }
+        .main-content { display: grid; grid-template-columns: 1fr 350px; gap: 30px; width: 100%; }
         
         /* Notification Styles */
         .notification-container { position: relative; margin-right: 15px; display: flex; align-items: center; }
         .notification-btn {
             background: none; border: none; font-size: 1.6rem; cursor: pointer;
-            position: relative; transition: transform 0.2s; padding: 5px; line-height: 1;
+            position: relative; padding: 5px; line-height: 1;
         }
-        .notification-btn:hover { transform: scale(1.1); }
         .badge {
             position: absolute; top: -2px; right: -2px;
             background: var(--danger); color: white;
@@ -72,16 +68,13 @@
             width: 18px; height: 18px; border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        @keyframes popIn { from { transform: scale(0); } to { transform: scale(1); } }
 
         .notification-dropdown {
             position: absolute; top: 130%; right: -50px; width: 320px;
             background: white; border-radius: 15px;
             box-shadow: 0 10px 40px rgba(0,0,0,0.2);
             z-index: 1000; padding: 15px; border: 1px solid var(--border);
-            animation: fadeIn 0.2s ease;
         }
         .notification-dropdown::before {
             content: ''; position: absolute; top: -8px; right: 58px;
@@ -103,8 +96,7 @@
         .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
         .calendar-header h2 { font-size: 1.5rem; color: var(--primary); }
         .nav-buttons { display: flex; gap: 10px; }
-        .nav-btn { background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: 600; transition: all 0.3s ease; }
-        .nav-btn:hover { background: var(--primary-light); transform: translateY(-2px); box-shadow: var(--shadow); }
+        .nav-btn { background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: 600; }
         .calendar { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; }
         .day-header { text-align: center; font-weight: 600; padding: 15px 5px; color: var(--primary); font-size: 0.9rem; }
         .day-header.sunday { color: #e74c3c; }
@@ -115,14 +107,13 @@
             border-radius: 12px; 
             padding: 8px; 
             cursor: pointer; 
-            transition: all 0.3s ease; 
             position: relative; 
             background: var(--bg);
             min-height: 60px;
             display: flex;
             flex-direction: column;
+            -webkit-tap-highlight-color: transparent;
         }
-        .day-cell:hover { border-color: var(--primary); transform: scale(1.05); box-shadow: var(--shadow); z-index: 2; }
         .day-cell.other-month { opacity: 0.3; }
         .day-cell.range-start { background: var(--primary); color: white; border-color: var(--primary); border-radius: 12px 0 0 12px; z-index: 1; }
         .day-cell.range-end { background: var(--primary); color: white; border-color: var(--primary); border-radius: 0 12px 12px 0; z-index: 1; }
@@ -143,25 +134,20 @@
         .card h3 { font-size: 1.3rem; margin-bottom: 20px; color: var(--primary); }
         .form-group { margin-bottom: 20px; }
         .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: var(--text); font-size: 0.95rem; }
-        .form-group input, .form-group select { width: 100%; padding: 12px 15px; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem; transition: all 0.3s ease; }
-        .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(45, 95, 141, 0.1); }
+        .form-group input, .form-group select { width: 100%; padding: 12px 15px; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem; }
+        .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--primary); }
         
         /* Buttons */
-        .btn-primary { width: 100%; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); color: white; border: none; padding: 15px; border-radius: 12px; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; margin-top: 10px; white-space: nowrap; }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
-        
-        .btn-secondary { width: 100%; background: var(--btn-secondary-bg); color: var(--btn-secondary-text); border: none; padding: 15px; border-radius: 12px; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; margin-top: 10px; white-space: nowrap; }
-        .btn-secondary:hover { background: var(--btn-secondary-hover); transform: translateY(-2px); }
+        .btn-primary { width: 100%; background: var(--primary); color: white; border: none; padding: 15px; border-radius: 12px; font-size: 1.1rem; font-weight: 600; cursor: pointer; margin-top: 10px; white-space: nowrap; }
+        .btn-secondary { width: 100%; background: var(--btn-secondary-bg); color: var(--btn-secondary-text); border: none; padding: 15px; border-radius: 12px; font-size: 1.1rem; font-weight: 600; cursor: pointer; margin-top: 10px; white-space: nowrap; }
 
-        .reservation-list { max-height: 400px; overflow-y: auto; }
-        .reservation-item { padding: 15px; background: var(--bg); border-radius: 12px; margin-bottom: 12px; border-left: 4px solid var(--secondary); animation: slideIn 0.3s ease; }
-        @keyframes slideIn { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
+        .reservation-list { max-height: 400px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+        .reservation-item { padding: 15px; background: var(--bg); border-radius: 12px; margin-bottom: 12px; border-left: 4px solid var(--secondary); }
         .reservation-item h4 { font-size: 1.05rem; margin-bottom: 8px; color: var(--primary); }
-        .reservation-detail { font-size: 0.9rem; color: var(--text-light); margin-bottom: 4px; font-family: 'JetBrains Mono', monospace; }
+        .reservation-detail { font-size: 0.9rem; color: var(--text-light); margin-bottom: 4px; font-family: monospace; }
         .reservation-price { font-size: 1.2rem; font-weight: 700; color: var(--success); margin-top: 8px; display: flex; justify-content: space-between; align-items: center;}
         
-        .delete-btn { background: var(--danger); color: white; border: none; padding: 8px 15px; border-radius: 8px; font-weight: 600; cursor: pointer; margin-top: 10px; font-size: 0.9rem; transition: all 0.3s ease; }
-        .delete-btn:hover { background: #c0392b; transform: scale(1.05); }
+        .delete-btn { background: var(--danger); color: white; border: none; padding: 8px 15px; border-radius: 8px; font-weight: 600; cursor: pointer; margin-top: 10px; font-size: 0.9rem; }
         
         /* Payment Status Styles */
         .payment-status { font-size: 0.8rem; padding: 4px 8px; border-radius: 6px; font-weight: 600; }
@@ -169,13 +155,11 @@
         .status-pending { background: #fff3e0; color: #ef6c00; }
         .status-paid { background: #e8f5e9; color: #2e7d32; }
         
-        .pay-btn { background: var(--secondary); color: white; border: none; padding: 6px 12px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; margin-left: 10px; transition: 0.3s; }
-        .pay-btn:hover { background: #e67e22; }
-        .confirm-btn { background: var(--success); color: white; border: none; padding: 6px 12px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; margin-left: 10px; transition: 0.3s; }
-        .confirm-btn:hover { background: #219150; }
+        .pay-btn { background: var(--secondary); color: white; border: none; padding: 6px 12px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; margin-left: 10px; }
+        .confirm-btn { background: var(--success); color: white; border: none; padding: 6px 12px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; margin-left: 10px; }
 
         /* Modals */
-        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.7); display: flex; align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(5px); }
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.7); display: flex; align-items: center; justify-content: center; z-index: 1000; }
         .modal-content { 
             background: white; 
             padding: 30px; 
@@ -186,47 +170,39 @@
             max-height: 85vh; 
             overflow-y: auto; 
             display: flex; 
-            flex-direction: column; 
-            animation: modalSlideIn 0.3s ease; 
+            flex-direction: column;
+            -webkit-overflow-scrolling: touch;
         }
         
-        @keyframes modalSlideIn { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
         .modal-content h2 { color: var(--primary); margin-bottom: 20px; text-align: center; font-size: 1.6rem; flex-shrink: 0; }
         
         /* Modal specific scrollable areas */
-        .member-list { display: flex; flex-direction: column; gap: 10px; overflow-y: auto; margin-bottom: 20px; flex: 1; padding-right: 5px; font-family: 'Outfit', sans-serif; }
-        .member-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: var(--bg); border-radius: 8px; border: 2px solid var(--border); flex-shrink: 0; font-family: 'Outfit', sans-serif; }
-        .member-name { font-weight: 600; color: var(--text); font-family: 'Outfit', sans-serif; }
+        .member-list { display: flex; flex-direction: column; gap: 10px; overflow-y: auto; margin-bottom: 20px; flex: 1; padding-right: 5px; -webkit-overflow-scrolling: touch; }
+        .member-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: var(--bg); border-radius: 8px; border: 2px solid var(--border); flex-shrink: 0; }
+        .member-name { font-weight: 600; color: var(--text); }
         
         /* Buttons in Header */
-        .header-btn { border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.9rem; transition: all 0.3s ease; margin-left: 5px; }
+        .header-btn { border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.9rem; margin-left: 5px; }
         .logout-btn { background: var(--danger); color: white; }
-        .logout-btn:hover { background: #c0392b; transform: translateY(-2px); }
         .manage-members-btn { background: var(--primary); color: white; }
-        .manage-members-btn:hover { background: var(--primary-light); transform: translateY(-2px); }
         .add-member-btn { background: var(--success); color: white; }
-        .add-member-btn:hover { background: #219150; transform: translateY(-2px); }
         .admin-mode-btn { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
-        .admin-mode-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4); }
         .my-history-btn { background: var(--secondary); color: white; }
-        .my-history-btn:hover { background: #e67e22; transform: translateY(-2px); }
 
         /* Small action buttons in lists */
-        .list-action-btn { border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: 600; margin-left: 5px; transition: 0.2s; white-space: nowrap; }
+        .list-action-btn { border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: 600; margin-left: 5px; white-space: nowrap; }
         .btn-promote { background: var(--secondary); color: white; }
         .btn-demote { background: var(--text-light); color: white; }
         .btn-delete { background: var(--danger); color: white; }
 
         /* Stats Table */
-        .stats-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-family: 'Outfit', sans-serif; }
+        .stats-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
         .stats-table th, .stats-table td { padding: 12px; text-align: left; border-bottom: 1px solid var(--border); }
         .stats-table th { background: var(--bg); font-weight: 600; color: var(--primary); }
-        .stats-table tr:hover { background: var(--bg); }
         .stats-table tfoot td { font-weight: 700; background: #fff3cd; border-top: 2px solid var(--secondary); }
 
         .month-selector { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; justify-content: center; flex-shrink: 0; }
-        .month-selector button { padding: 8px 15px; background: var(--primary); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.3s ease; }
-        .month-selector button:hover { background: var(--primary-light); }
+        .month-selector button { padding: 8px 15px; background: var(--primary); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; }
         
         /* Admin Mode Tabs */
         .admin-tabs { display: flex; gap: 10px; margin-bottom: 20px; justify-content: center; }
@@ -238,7 +214,6 @@
             cursor: pointer; 
             font-weight: 600; 
             color: var(--text-light);
-            transition: all 0.3s;
         }
         .admin-tab.active { 
             background: var(--primary); 
@@ -281,7 +256,7 @@
 
         /* Forms */
         .login-form { display: flex; flex-direction: column; gap: 15px; }
-        .pin-input { padding: 15px; font-size: 1.5rem; text-align: center; border: 2px solid var(--border); border-radius: 10px; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.5em; }
+        .pin-input { padding: 15px; font-size: 1.5rem; text-align: center; border: 2px solid var(--border); border-radius: 10px; font-family: monospace; letter-spacing: 0.5em; }
         .pin-input:focus { outline: none; border-color: var(--primary); }
         
         /* Checkbox styling */
@@ -293,10 +268,8 @@
             border: 2px solid var(--border);
             border-radius: 10px;
             cursor: pointer;
-            transition: 0.2s;
             background: var(--bg);
         }
-        .checkbox-container:hover { border-color: var(--primary); }
         .checkbox-input { width: 20px; height: 20px; accent-color: var(--primary); cursor: pointer; margin: 0; }
         .checkbox-text { font-weight: 600; color: var(--text); user-select: none; }
 
@@ -546,13 +519,33 @@
                 padding: 6px 1px;
             }
         }
+
+        /* デスクトップのみのホバー効果 */
+        @media (hover: hover) and (pointer: fine) {
+            .notification-btn:hover { transform: scale(1.1); }
+            .nav-btn:hover { background: var(--primary-light); transform: translateY(-2px); box-shadow: var(--shadow); }
+            .day-cell:hover { border-color: var(--primary); transform: scale(1.05); box-shadow: var(--shadow); z-index: 2; }
+            .btn-primary:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+            .btn-secondary:hover { background: var(--btn-secondary-hover); transform: translateY(-2px); }
+            .delete-btn:hover { background: #c0392b; transform: scale(1.05); }
+            .pay-btn:hover { background: #e67e22; }
+            .confirm-btn:hover { background: #219150; }
+            .checkbox-container:hover { border-color: var(--primary); }
+            .stats-table tr:hover { background: var(--bg); }
+            .logout-btn:hover { background: #c0392b; transform: translateY(-2px); }
+            .manage-members-btn:hover { background: var(--primary-light); transform: translateY(-2px); }
+            .add-member-btn:hover { background: #219150; transform: translateY(-2px); }
+            .admin-mode-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4); }
+            .my-history-btn:hover { background: #e67e22; transform: translateY(-2px); }
+            .month-selector button:hover { background: var(--primary-light); }
+        }
     </style>
 </head>
 <body>
     <div id="root"></div>
 
     <script type="text/babel">
-        const { useState, useEffect, useRef } = React;
+        const { useState, useEffect, useRef, useMemo, useCallback } = React;
 
         // 初期メンバーデータ
         const INITIAL_MEMBERS = [
@@ -680,7 +673,7 @@
                 return () => {
                     document.removeEventListener('mousedown', handleClickOutside);
                 };
-            }, [notificationRef]);
+            }, []);
 
             useEffect(() => {
                 if (currentUser && members.length > 0) {
@@ -757,8 +750,8 @@
                 };
             }, []);
 
-            // 料金計算ロジック (動的設定対応)
-            const calculatePrice = (hours, settings) => {
+            // 料金計算ロジック (動的設定対応) - useCallbackで最適化
+            const calculatePrice = useCallback((hours, settings) => {
                 const { rates, extraDayPrice } = settings;
                 
                 // 設定されたレートの中で、時間が収まるものを探す
@@ -773,7 +766,7 @@
                 const extraHours = hours - maxRate.hours;
                 const extraDays = Math.ceil(extraHours / 24);
                 return maxRate.price + (extraDays * extraDayPrice);
-            };
+            }, []);
 
             // 料金計算エフェクト
             useEffect(() => {
@@ -792,7 +785,7 @@
                 } else {
                     setCalculatedPrice(null); setCalculatedHours(null);
                 }
-            }, [formData, priceSettings]);
+            }, [formData, priceSettings, calculatePrice]);
 
             useEffect(() => {
                 if (!rangeStart) return;
@@ -811,18 +804,31 @@
                 if (currentUser) setFormData(prev => ({ ...prev, member: currentUser }));
             }, [currentUser]);
 
-            // --- Handlers ---
+            // --- Handlers - useCallbackで最適化 ---
 
-            const handleDateClick = (date) => {
-                if ((!rangeStart && !rangeEnd) || (rangeStart && rangeEnd)) {
-                    setRangeStart(date); setRangeEnd(null);
-                } else if (rangeStart && !rangeEnd) {
-                    if (date < rangeStart) setRangeStart(date);
-                    else setRangeEnd(date);
-                }
-            };
+            const handleDateClick = useCallback((date) => {
+                setRangeStart(prevStart => {
+                    setRangeEnd(prevEnd => {
+                        if ((!prevStart && !prevEnd) || (prevStart && prevEnd)) {
+                            return null;
+                        } else if (prevStart && !prevEnd) {
+                            if (date < prevStart) return null;
+                            else return date;
+                        }
+                        return prevEnd;
+                    });
+                    
+                    if ((!prevStart && !rangeEnd) || (prevStart && rangeEnd)) {
+                        return date;
+                    } else if (prevStart && !rangeEnd) {
+                        if (date < prevStart) return date;
+                        else return prevStart;
+                    }
+                    return prevStart;
+                });
+            }, [rangeEnd]);
 
-            const handleLogin = (e) => {
+            const handleLogin = useCallback((e) => {
                 e.preventDefault();
                 const member = members.find(m => m.name === selectedMemberForLogin);
                 if (member && member.pin === pinInput) {
@@ -836,27 +842,27 @@
                 } else {
                     alert('PINコードが正しくありません'); setPinInput('');
                 }
-            };
+            }, [members, selectedMemberForLogin, pinInput]);
 
-            const handleLogout = () => {
+            const handleLogout = useCallback(() => {
                 if (window.confirm('ログアウトしますか？')) {
                     setCurrentUser(null); setIsAuthenticated(false); setIsAdmin(false);
                     setShowLoginModal(true); setShowAdminMode(false); setShowMyHistoryModal(false);
                     localStorage.removeItem('authenticatedUser'); setPinInput('');
                 }
-            };
+            }, []);
 
-            const updatePaymentStatus = async (id, status) => {
+            const updatePaymentStatus = useCallback(async (id, status) => {
                 try {
                     await database.ref(`reservations/${id}`).update({ paymentStatus: status });
                 } catch (e) {
                     console.error('支払い状況更新エラー', e);
                     alert('更新に失敗しました');
                 }
-            };
+            }, []);
 
             // Settings Save Handler
-            const handleSaveSettings = async () => {
+            const handleSaveSettings = useCallback(async () => {
                 if (!isAdmin) return;
                 try {
                     await database.ref('settings/prices').set(priceSettings);
@@ -865,15 +871,17 @@
                     console.error('設定保存エラー', e);
                     alert('設定の保存に失敗しました');
                 }
-            };
+            }, [isAdmin, priceSettings]);
 
-            const handleSettingChange = (index, field, value) => {
-                const newRates = [...priceSettings.rates];
-                newRates[index][field] = Number(value);
-                setPriceSettings({ ...priceSettings, rates: newRates });
-            };
+            const handleSettingChange = useCallback((index, field, value) => {
+                setPriceSettings(prev => {
+                    const newRates = [...prev.rates];
+                    newRates[index][field] = Number(value);
+                    return { ...prev, rates: newRates };
+                });
+            }, []);
 
-            const handleAddMember = async (e) => {
+            const handleAddMember = useCallback(async (e) => {
                 e.preventDefault();
                 if (!newMemberName || !newMemberPin) return alert('入力が不足しています');
                 if (!/^\d{4}$/.test(newMemberPin)) return alert('PINは4桁の数字で');
@@ -884,9 +892,9 @@
                     setShowAddMemberModal(false);
                     alert('メンバーを追加しました');
                 } catch (e) { alert('追加失敗'); }
-            };
+            }, [newMemberName, newMemberPin, newMemberIsAdmin, members]);
 
-            const handleDeleteMember = async (id, name) => {
+            const handleDeleteMember = useCallback(async (id, name) => {
                 if (!isAdmin) return;
                 const m = members.find(m => m.id === id);
                 if (m && m.isAdmin) return alert('管理者は削除できません');
@@ -894,17 +902,17 @@
                 if (window.confirm(`${name}を削除しますか？`)) {
                     await database.ref(`members/${id}`).remove();
                 }
-            };
+            }, [isAdmin, members, reservations]);
 
-            const handleToggleAdmin = async (id, name, makeAdmin) => {
+            const handleToggleAdmin = useCallback(async (id, name, makeAdmin) => {
                 if (!isAdmin) return;
                 if (window.confirm(`${name}の権限を変更しますか？`)) {
                     const m = members.find(m => m.id === id);
                     await database.ref(`members/${id}`).update({ ...m, isAdmin: makeAdmin });
                 }
-            };
+            }, [isAdmin, members]);
 
-            const handleSubmit = async (e) => {
+            const handleSubmit = useCallback(async (e) => {
                 e.preventDefault();
                 if (!formData.startDate || !formData.endDate || !calculatedPrice) return alert('日時を確認してください');
                 if (!isFirebaseReady) return alert('Firebase設定が必要です');
@@ -941,14 +949,15 @@
                     setFormData(prev => ({ ...prev, startDate: formData.startDate, endDate: formData.startDate }));
                     alert('予約しました');
                 } catch (e) { alert('予約失敗'); }
-            };
+            }, [formData, calculatedPrice, calculatedHours, reservations]);
 
-            const handleDeleteReservation = async (id) => {
+            const handleDeleteReservation = useCallback(async (id) => {
                 if (window.confirm('予約を削除しますか？')) await database.ref(`reservations/${id}`).remove();
-            };
+            }, []);
 
-            const getDaysInMonth = (date) => {
-                const year = date.getFullYear(), month = date.getMonth();
+            // useMemoで計算結果をキャッシュ
+            const days = useMemo(() => {
+                const year = currentDate.getFullYear(), month = currentDate.getMonth();
                 const daysInMonth = new Date(year, month + 1, 0).getDate();
                 const firstDay = new Date(year, month, 1).getDay();
                 const prevLast = new Date(year, month, 0).getDate();
@@ -958,9 +967,9 @@
                 const remaining = 42 - days.length;
                 for (let i = 1; i <= remaining; i++) days.push({ date: new Date(year, month + 1, i), isCurrentMonth: false });
                 return days;
-            };
+            }, [currentDate]);
 
-            const getReservationsForDate = (date) => {
+            const getReservationsForDate = useCallback((date) => {
                 const dayStart = new Date(date); dayStart.setHours(0,0,0,0);
                 const dayEnd = new Date(date); dayEnd.setHours(23,59,59,999);
                 return reservations.filter(r => {
@@ -969,16 +978,16 @@
                     else { s = new Date(`${r.date}T${r.startTime}:00`); e = new Date(`${r.date}T${r.endTime}:00`); }
                     return s < dayEnd && e > dayStart;
                 });
-            };
+            }, [reservations]);
 
-            const getReservationsForMonth = (member, year, month) => {
+            const getReservationsForMonth = useCallback((member, year, month) => {
                 return reservations.filter(r => {
                     const d = new Date((r.startDate || r.date) + 'T00:00:00');
                     return (member === 'ALL' || r.member === member) && d.getFullYear() === year && d.getMonth() === month;
                 }).sort((a, b) => new Date((a.startDate||a.date)+'T00:00:00') - new Date((b.startDate||b.date)+'T00:00:00'));
-            };
+            }, [reservations]);
 
-            const getMemberStatsForMonth = (year, month) => {
+            const getMemberStatsForMonth = useCallback((year, month) => {
                 const stats = {};
                 let totalAllCount = 0, totalAllHours = 0, totalAllPrice = 0;
 
@@ -996,15 +1005,15 @@
                     }
                 });
                 return { stats, totalAllCount, totalAllHours, totalAllPrice };
-            };
+            }, [reservations]);
 
-            const renderStatusBadge = (status) => {
+            const renderStatusBadge = useCallback((status) => {
                 if (status === 'confirmed') return <span className="payment-status status-paid">受取済</span>;
                 if (status === 'pending') return <span className="payment-status status-pending">確認待ち</span>;
                 return <span className="payment-status status-unpaid">未払い</span>;
-            };
+            }, []);
 
-            const getNotifications = () => {
+            const notifications = useMemo(() => {
                 const now = new Date();
                 const isPast = (r) => {
                     let end;
@@ -1018,12 +1027,10 @@
                 } else {
                     return reservations.filter(r => r.member === currentUser && r.paymentStatus === 'unpaid' && isPast(r));
                 }
-            };
-            const notifications = getNotifications();
+            }, [isAdmin, reservations, currentUser]);
 
             if (isLoading) return <div className="container" style={{textAlign:'center', padding:'50px'}}>データを読み込み中...</div>;
 
-            const days = getDaysInMonth(currentDate);
             const sidebarDate = rangeStart || new Date();
             const selectedDateReservations = getReservationsForDate(sidebarDate);
 
