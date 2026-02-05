@@ -107,7 +107,19 @@
         .day-header { text-align: center; font-weight: 600; padding: 15px 5px; color: var(--primary); font-size: 0.9rem; }
         .day-header.sunday { color: #e74c3c; }
         .day-header.saturday { color: #3498db; }
-        .day-cell { aspect-ratio: 1; border: 2px solid var(--border); border-radius: 12px; padding: 8px; cursor: pointer; transition: all 0.3s ease; position: relative; background: var(--bg); }
+        .day-cell { 
+            aspect-ratio: 1; 
+            border: 2px solid var(--border); 
+            border-radius: 12px; 
+            padding: 8px; 
+            cursor: pointer; 
+            transition: all 0.3s ease; 
+            position: relative; 
+            background: var(--bg);
+            min-height: 60px;
+            display: flex;
+            flex-direction: column;
+        }
         .day-cell:hover { border-color: var(--primary); transform: scale(1.05); box-shadow: var(--shadow); z-index: 2; }
         .day-cell.other-month { opacity: 0.3; }
         .day-cell.range-start { background: var(--primary); color: white; border-color: var(--primary); border-radius: 12px 0 0 12px; z-index: 1; }
@@ -120,7 +132,7 @@
         .day-cell.saturday .day-number { color: #3498db; }
         .day-cell.range-start .day-number, .day-cell.range-end .day-number { color: white !important; }
         .day-number { font-weight: 600; font-size: 0.95rem; margin-bottom: 5px; }
-        .day-reservations { display: flex; flex-direction: column; gap: 2px; margin-top: 5px; }
+        .day-reservations { display: flex; flex-direction: column; gap: 2px; margin-top: auto; }
         .reservation-indicator { width: 100%; height: 4px; border-radius: 2px; background: var(--secondary); }
 
         /* Sidebar & Forms */
@@ -289,13 +301,248 @@
         .calculation-display { background: #fff3cd; padding: 15px; border-radius: 10px; margin-top: 15px; border-left: 4px solid var(--secondary); }
         .calculation-display p { margin: 5px 0; font-size: 0.95rem; }
         
-        @media (max-width: 1200px) {
-            .header { flex-direction: column; gap: 15px; text-align: center; }
-            .header-left { flex-direction: column; }
-            .calendar { gap: 5px; }
-            .day-cell { padding: 5px; }
-            .header-btn { margin-top: 5px; }
-            .main-content { grid-template-columns: 1fr; }
+        /* ===== スマホ対応の強化 ===== */
+        @media (max-width: 768px) {
+            body { padding: 10px; }
+            
+            /* ヘッダー調整 */
+            .header { 
+                flex-direction: column; 
+                gap: 15px; 
+                padding: 15px; 
+            }
+            .header-left { 
+                flex-direction: column; 
+                text-align: center;
+                width: 100%;
+            }
+            .header h1 { 
+                font-size: 1.5rem;
+                flex-direction: column;
+                gap: 5px;
+            }
+            .car-icon { font-size: 2rem; }
+            .date-display { font-size: 0.85rem; }
+            
+            /* 通知ドロップダウン */
+            .notification-dropdown {
+                right: -20px;
+                width: 280px;
+            }
+            .notification-dropdown::before {
+                right: 28px;
+            }
+            
+            /* ヘッダーボタン */
+            .header-btn { 
+                font-size: 0.75rem;
+                padding: 6px 10px;
+                margin: 3px;
+            }
+            
+            /* メインコンテンツ */
+            .main-content { 
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            /* カレンダーセクション */
+            .calendar-section { 
+                padding: 15px; 
+            }
+            .calendar-header { 
+                flex-direction: column;
+                gap: 10px;
+                margin-bottom: 15px;
+            }
+            .calendar-header h2 { 
+                font-size: 1.2rem; 
+            }
+            .nav-buttons { 
+                width: 100%;
+                justify-content: center;
+            }
+            .nav-btn { 
+                padding: 8px 20px;
+                font-size: 0.9rem;
+            }
+            
+            /* カレンダーグリッド - スマホ用最適化 */
+            .calendar { 
+                gap: 4px;
+            }
+            .day-header { 
+                padding: 8px 2px;
+                font-size: 0.75rem;
+            }
+            .day-cell { 
+                padding: 4px;
+                border-radius: 8px;
+                min-height: 50px;
+                border-width: 1px;
+            }
+            .day-number { 
+                font-size: 0.8rem;
+                margin-bottom: 2px;
+            }
+            .day-reservations { 
+                gap: 1px; 
+            }
+            .reservation-indicator { 
+                height: 3px;
+            }
+            
+            /* サイドバー・カード */
+            .card { 
+                padding: 15px; 
+            }
+            .card h3 { 
+                font-size: 1.1rem;
+                margin-bottom: 15px;
+            }
+            
+            /* フォーム */
+            .form-group { 
+                margin-bottom: 15px; 
+            }
+            .form-group label { 
+                font-size: 0.85rem; 
+            }
+            .form-group input, 
+            .form-group select { 
+                padding: 10px;
+                font-size: 0.9rem;
+            }
+            
+            /* 予約リスト */
+            .reservation-list { 
+                max-height: 300px; 
+            }
+            .reservation-item { 
+                padding: 12px; 
+            }
+            .reservation-item h4 { 
+                font-size: 0.95rem; 
+            }
+            .reservation-detail { 
+                font-size: 0.8rem; 
+            }
+            .reservation-price { 
+                font-size: 1rem;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+            
+            /* ボタン */
+            .btn-primary, 
+            .btn-secondary { 
+                padding: 12px;
+                font-size: 1rem;
+            }
+            .delete-btn,
+            .pay-btn,
+            .confirm-btn { 
+                font-size: 0.75rem;
+                padding: 5px 10px;
+            }
+            
+            /* モーダル */
+            .modal-content { 
+                padding: 20px;
+                width: 95%;
+                max-height: 90vh;
+            }
+            .modal-content h2 { 
+                font-size: 1.3rem;
+                margin-bottom: 15px;
+            }
+            
+            /* メンバーアイテム */
+            .member-item { 
+                padding: 10px;
+                flex-direction: column;
+                gap: 8px;
+                align-items: flex-start;
+            }
+            .list-action-btn { 
+                font-size: 0.75rem;
+                padding: 5px 10px;
+            }
+            
+            /* 統計テーブル */
+            .stats-table { 
+                font-size: 0.85rem; 
+            }
+            .stats-table th, 
+            .stats-table td { 
+                padding: 8px 4px; 
+            }
+            
+            /* 月選択 */
+            .month-selector { 
+                gap: 8px; 
+            }
+            .month-selector button { 
+                padding: 6px 12px;
+                font-size: 0.9rem;
+            }
+            .month-selector span { 
+                font-size: 1rem !important;
+                min-width: 120px !important;
+            }
+            
+            /* 管理者タブ */
+            .admin-tabs { 
+                gap: 8px;
+                flex-wrap: wrap;
+            }
+            .admin-tab { 
+                padding: 8px 15px;
+                font-size: 0.85rem;
+            }
+            
+            /* 設定 */
+            .setting-item { 
+                padding: 12px;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+            .setting-label { 
+                font-size: 0.9rem; 
+            }
+            .setting-input { 
+                width: 80px;
+                padding: 6px;
+                font-size: 0.9rem;
+            }
+            
+            /* 計算表示 */
+            .calculation-display { 
+                padding: 12px; 
+            }
+            .calculation-display p { 
+                font-size: 0.85rem; 
+            }
+        }
+        
+        /* 極小画面（320px以下）の追加調整 */
+        @media (max-width: 360px) {
+            .calendar { 
+                gap: 2px; 
+            }
+            .day-cell { 
+                padding: 2px;
+                min-height: 45px;
+            }
+            .day-number { 
+                font-size: 0.7rem; 
+            }
+            .day-header { 
+                font-size: 0.65rem;
+                padding: 6px 1px;
+            }
         }
     </style>
 </head>
@@ -811,7 +1058,7 @@
                                                 <span className="member-name">{m.name}</span> {m.isAdmin && '👑'}
                                             </div>
                                             {isAdmin && (
-                                                <div style={{display: 'flex', gap: '5px'}}>
+                                                <div style={{display: 'flex', gap: '5px', flexWrap: 'wrap'}}>
                                                     {!m.isAdmin && <button className="list-action-btn btn-promote" onClick={() => handleToggleAdmin(m.id, m.name, true)}>昇格</button>}
                                                     {m.isAdmin && m.name !== currentUser && <button className="list-action-btn btn-demote" onClick={() => handleToggleAdmin(m.id, m.name, false)}>解除</button>}
                                                     <button className="list-action-btn btn-delete" onClick={() => handleDeleteMember(m.id, m.name)}>削除</button>
@@ -892,7 +1139,7 @@
                         </div>
                     )}
 
-                    {/* Admin Mode Modal (Updated) */}
+                    {/* Admin Mode Modal */}
                     {showAdminMode && isAdmin && (
                         <div className="modal-overlay">
                             <div className="modal-content" style={{maxWidth: '900px'}}>
@@ -1028,8 +1275,8 @@
                                 <h1><span className="car-icon">🚗</span>家族カーシェア管理</h1>
                             </div>
                             
-                            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '10px'}}>
-                                <div style={{display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'flex-end'}}>
+                            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '10px', width: '100%'}}>
+                                <div style={{display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'flex-end', width: '100%'}}>
                                     
                                     {/* Notification Bell */}
                                     <div className="notification-container">
