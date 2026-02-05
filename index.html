@@ -682,6 +682,8 @@
             const [showAdminMode, setShowAdminMode] = useState(false);
             const [showMyHistoryModal, setShowMyHistoryModal] = useState(false);
             const [showNotifications, setShowNotifications] = useState(false);
+            const [showSwitchUserModal, setShowSwitchUserModal] = useState(false);
+            const [switchToMember, setSwitchToMember] = useState('');
 
             // Notification Ref for clicking outside
             const notificationRef = useRef(null);
@@ -903,6 +905,30 @@
                 }
             }, []);
 
+            const handleSwitchUser = useCallback((memberName) => {
+                setSwitchToMember(memberName);
+                setShowSwitchUserModal(true);
+                setShowMemberListModal(false);
+                setPinInput('');
+            }, []);
+
+            const handleConfirmSwitchUser = useCallback((e) => {
+                e.preventDefault();
+                const member = members.find(m => m.name === switchToMember);
+                if (member && member.pin === pinInput) {
+                    setCurrentUser(switchToMember);
+                    setIsAdmin(member.isAdmin || false);
+                    setShowSwitchUserModal(false);
+                    localStorage.setItem('authenticatedUser', switchToMember);
+                    setPinInput('');
+                    setSwitchToMember('');
+                    alert(`${switchToMember}に切り替えました`);
+                } else {
+                    alert('PINコードが正しくありません'); 
+                    setPinInput('');
+                }
+            }, [members, switchToMember, pinInput]);
+
             const updatePaymentStatus = useCallback(async (id, status) => {
                 try {
                     await database.ref(`reservations/${id}`).update({ paymentStatus: status });
@@ -1116,14 +1142,20 @@
                                         <div key={m.id} className="member-item">
                                             <div style={{flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'}}>
                                                 <span className="member-name">{m.name}</span> {m.isAdmin && '👑'}
+                                                {m.name === currentUser && <span style={{marginLeft: '8px', fontSize: '0.85rem', color: 'var(--success)'}}>（ログイン中）</span>}
                                             </div>
-                                            {isAdmin && (
-                                                <div style={{display: 'flex', gap: '5px', flexWrap: 'wrap'}}>
-                                                    {!m.isAdmin && <button className="list-action-btn btn-promote" onClick={() => handleToggleAdmin(m.id, m.name, true)}>昇格</button>}
-                                                    {m.isAdmin && m.name !== currentUser && <button className="list-action-btn btn-demote" onClick={() => handleToggleAdmin(m.id, m.name, false)}>解除</button>}
-                                                    <button className="list-action-btn btn-delete" onClick={() => handleDeleteMember(m.id, m.name)}>削除</button>
-                                                </div>
-                                            )}
+                                            <div style={{display: 'flex', gap: '5px', flexWrap: 'wrap'}}>
+                                                {m.name !== currentUser && (
+                                                    <button className="list-action-btn btn-switch" onClick={() => handleSwitchUser(m.name)} style={{background: 'var(--primary)', color: 'white'}}>ログイン</button>
+                                                )}
+                                                {isAdmin && (
+                                                    <>
+                                                        {!m.isAdmin && <button className="list-action-btn btn-promote" onClick={() => handleToggleAdmin(m.id, m.name, true)}>昇格</button>}
+                                                        {m.isAdmin && m.name !== currentUser && <button className="list-action-btn btn-demote" onClick={() => handleToggleAdmin(m.id, m.name, false)}>解除</button>}
+                                                        <button className="list-action-btn btn-delete" onClick={() => handleDeleteMember(m.id, m.name)}>削除</button>
+                                                    </>
+                                                )}
+                                            </div>
                                         </div>
                                     ))}
                                 </div>
@@ -1153,6 +1185,47 @@
                                     <div style={{display:'flex', gap:'10px'}}>
                                         <button type="submit" className="btn-primary" style={{flex: 1}}>追加</button>
                                         <button type="button" className="btn-secondary" style={{flex: 1}} onClick={() => setShowAddMemberModal(false)}>キャンセル</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Switch User Modal */}
+                    {showSwitchUserModal && (
+                        <div className="modal-overlay">
+                            <div className="modal-content" style={{maxWidth: '400px'}}>
+                                <h2>🔄 ユーザー切り替え</h2>
+                                <p style={{marginBottom: '20px', color: 'var(--text-light)', textAlign: 'center'}}>
+                                    <strong>{switchToMember}</strong> のPINコードを入力してください
+                                </p>
+                                <form onSubmit={handleConfirmSwitchUser} className="login-form">
+                                    <input 
+                                        type="password" 
+                                        inputMode="numeric" 
+                                        pattern="[0-9]*" 
+                                        className="pin-input" 
+                                        value={pinInput} 
+                                        onChange={e => setPinInput(e.target.value)} 
+                                        maxLength="4" 
+                                        placeholder="••••" 
+                                        required 
+                                        autoFocus 
+                                    />
+                                    <div style={{display:'flex', gap:'10px', marginTop: '15px'}}>
+                                        <button type="submit" className="btn-primary" style={{flex: 1}}>切り替え</button>
+                                        <button 
+                                            type="button" 
+                                            className="btn-secondary" 
+                                            style={{flex: 1}} 
+                                            onClick={() => {
+                                                setShowSwitchUserModal(false);
+                                                setSwitchToMember('');
+                                                setPinInput('');
+                                            }}
+                                        >
+                                            キャンセル
+                                        </button>
                                     </div>
                                 </form>
                             </div>
