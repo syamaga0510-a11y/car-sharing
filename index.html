@@ -1243,8 +1243,8 @@
 
                     {/* Member List Modal */}
                     {showMemberListModal && (
-                        <div className="modal-overlay">
-                            <div className="modal-content" style={{maxWidth: '500px'}}>
+                        <div className="modal-overlay" onClick={() => setShowMemberListModal(false)}>
+                            <div className="modal-content" style={{maxWidth: '500px'}} onClick={(e) => e.stopPropagation()}>
                                 <h2>👥 メンバー一覧</h2>
                                 <div className="member-list">
                                     {members.map(m => (
@@ -1275,8 +1275,8 @@
 
                     {/* Add Member Modal */}
                     {showAddMemberModal && (
-                        <div className="modal-overlay">
-                            <div className="modal-content" style={{maxWidth: '450px'}}>
+                        <div className="modal-overlay" onClick={() => setShowAddMemberModal(false)}>
+                            <div className="modal-content" style={{maxWidth: '450px'}} onClick={(e) => e.stopPropagation()}>
                                 <h2>➕ 新規メンバー追加</h2>
                                 <form onSubmit={handleAddMember} className="login-form">
                                     <div className="form-group"><label>名前</label><input value={newMemberName} onChange={e => setNewMemberName(e.target.value)} required /></div>
@@ -1302,8 +1302,12 @@
 
                     {/* Switch User Modal */}
                     {showSwitchUserModal && (
-                        <div className="modal-overlay">
-                            <div className="modal-content" style={{maxWidth: '400px'}}>
+                        <div className="modal-overlay" onClick={() => {
+                            setShowSwitchUserModal(false);
+                            setSwitchToMember('');
+                            setPinInput('');
+                        }}>
+                            <div className="modal-content" style={{maxWidth: '400px'}} onClick={(e) => e.stopPropagation()}>
                                 <h2>🔄 ユーザー切り替え</h2>
                                 <p style={{marginBottom: '20px', color: 'var(--text-light)', textAlign: 'center'}}>
                                     <strong>{switchToMember}</strong> のPINコードを入力してください
@@ -1343,8 +1347,8 @@
 
                     {/* My History Modal */}
                     {showMyHistoryModal && (
-                        <div className="modal-overlay">
-                            <div className="modal-content" style={{maxWidth: '800px'}}>
+                        <div className="modal-overlay" onClick={() => setShowMyHistoryModal(false)}>
+                            <div className="modal-content" style={{maxWidth: '800px'}} onClick={(e) => e.stopPropagation()}>
                                 <h2>👤 マイ履歴: {currentUser}</h2>
                                 <div className="month-selector">
                                     <button onClick={() => setMyHistoryMonth(new Date(myHistoryMonth.getFullYear(), myHistoryMonth.getMonth() - 1, 1))}>←</button>
@@ -1383,8 +1387,8 @@
 
                     {/* Admin Mode Modal */}
                     {showAdminMode && isAdmin && (
-                        <div className="modal-overlay">
-                            <div className="modal-content" style={{maxWidth: '900px'}}>
+                        <div className="modal-overlay" onClick={() => setShowAdminMode(false)}>
+                            <div className="modal-content" style={{maxWidth: '900px'}} onClick={(e) => e.stopPropagation()}>
                                 <h2>👑 管理者モード</h2>
                                 
                                 <div className="admin-tabs">
