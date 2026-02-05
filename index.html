@@ -385,19 +385,20 @@
             
             /* 通知コンテナとドロップダウン */
             .notification-container {
-                position: static;
+                position: relative;
                 margin-right: 0;
             }
             .notification-dropdown {
-                position: fixed;
-                top: 80px;
+                position: fixed; /* 固定位置 */
+                top: 50%; /* 画面中央 */
                 left: 50%;
                 right: auto;
-                transform: translateX(-50%);
+                transform: translate(-50%, -50%); /* 中央揃え */
                 width: calc(100vw - 40px);
                 max-width: 350px;
-                max-height: calc(100vh - 120px); /* 画面の高さに合わせる */
+                max-height: 70vh; /* 画面の70%の高さ */
                 overflow-y: auto;
+                z-index: 10000; /* モーダルと同じレベル */
             }
             .notification-dropdown::before {
                 display: none; /* スマホでは三角を非表示 */
@@ -1525,8 +1526,12 @@
                                             🔔
                                             {notifications.length > 0 && <span className="badge">{notifications.length}</span>}
                                         </button>
-                                        
-                                        {showNotifications && (
+                                    </div>
+
+                                    {/* Notification Dropdown - 独立表示 */}
+                                    {showNotifications && (
+                                        <>
+                                            <div className="modal-overlay" onClick={() => setShowNotifications(false)} style={{zIndex: 9999}}></div>
                                             <div className="notification-dropdown" ref={notificationRef}>
                                                 <div className="notification-header">
                                                     {isAdmin ? '🔔 承認待ち一覧' : '🔔 未払い一覧'}
@@ -1555,8 +1560,8 @@
                                                     ))
                                                 )}
                                             </div>
-                                        )}
-                                    </div>
+                                        </>
+                                    )}
 
                                     <span style={{marginRight: '10px', fontWeight: '600'}}>ログイン: <span style={{color:'var(--primary)'}}>{currentUser}</span></span>
                                     <button className="header-btn my-history-btn" onClick={() => setShowMyHistoryModal(true)}>👤 マイ履歴</button>
