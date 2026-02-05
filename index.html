@@ -223,7 +223,7 @@
             -webkit-overflow-scrolling: touch;
         }
         
-        .modal-content h2 { color: var(--primary); margin-bottom: 20px; text-align: center; font-size: 1.6rem; flex-shrink: 0; }
+        .modal-content h2 { color: var(--primary); margin-bottom: 10px; text-align: center; font-size: 1.2rem; flex-shrink: 0; }
         
         /* Modal specific scrollable areas */
         .member-list { display: flex; flex-direction: column; gap: 10px; overflow-y: auto; margin-bottom: 20px; flex: 1; padding-right: 5px; -webkit-overflow-scrolling: touch; }
@@ -254,14 +254,15 @@
         .month-selector button { padding: 8px 10px; background: var(--primary); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; }
         
         /* Admin Mode Tabs */
-        .admin-tabs { display: flex; gap: 10px; margin-bottom: 10px; justify-content: center; }
+        .admin-tabs { display: flex; gap: 8px; margin-bottom: 10px; justify-content: center; }
         .admin-tab { 
-            padding: 10px 20px; 
+            padding: 6px 12px; 
             border: 2px solid transparent; 
             border-radius: 20px; 
             background: var(--bg); 
             cursor: pointer; 
-            font-weight: 600; 
+            font-weight: 600;
+            font-size: 0.9rem;
             color: var(--text-light);
         }
         .admin-tab.active { 
@@ -555,7 +556,7 @@
                 gap: 8px; 
             }
             .month-selector button { 
-                padding: 6px 12px;
+                padding: 4px 10px;
                 font-size: 0.9rem;
             }
             .month-selector span { 
@@ -1400,7 +1401,7 @@
                                     <>
                                         <div className="month-selector">
                                             <button onClick={() => setSelectedMonth(new Date(selectedMonth.getFullYear(), selectedMonth.getMonth() - 1, 1))}>←</button>
-                                            <span style={{fontSize: '1.2rem', fontWeight: '600', minWidth: '150px', textAlign: 'center'}}>{selectedMonth.getFullYear()}年 {selectedMonth.getMonth() + 1}月</span>
+                                            <span style={{fontSize: '1.0rem', fontWeight: '600', minWidth: '120px', textAlign: 'center'}}>{selectedMonth.getFullYear()}年 {selectedMonth.getMonth() + 1}月</span>
                                             <button onClick={() => setSelectedMonth(new Date(selectedMonth.getFullYear(), selectedMonth.getMonth() + 1, 1))}>→</button>
                                         </div>
 
