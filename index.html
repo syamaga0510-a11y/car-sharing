@@ -50,7 +50,16 @@
         }
         
         .header-left { display: flex; align-items: center; gap: 20px; }
-        .header h1 { font-size: 2.2rem; font-weight: 700; color: var(--primary); display: flex; align-items: center; gap: 10px; margin: 0; }
+        .header h1 { 
+            font-size: 2.2rem; 
+            font-weight: 700; 
+            color: var(--primary); 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+            margin: 0; 
+            white-space: nowrap; /* タイトルの改行を防ぐ */
+        }
         .car-icon { font-size: 2.5rem; }
         .date-display { font-family: monospace; font-size: 1.1rem; color: var(--text-light); }
         .main-content { display: grid; grid-template-columns: 1fr 350px; gap: 30px; width: 100%; }
