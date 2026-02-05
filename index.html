@@ -254,9 +254,9 @@
         .month-selector button { padding: 8px 10px; background: var(--primary); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; }
         
         /* Admin Mode Tabs */
-        .admin-tabs { display: flex; gap: 8px; margin-bottom: 10px; justify-content: center; }
+        .admin-tabs { display: flex; flex-direction: rox; flex-wrap: nowrap; gap: 8px; margin-bottom: 10px; justify-content: center; }
         .admin-tab { 
-            padding: 6px 12px; 
+            padding: 6px 15px; 
             border: 2px solid transparent; 
             border-radius: 20px; 
             background: var(--bg); 
@@ -264,6 +264,9 @@
             font-weight: 600;
             font-size: 0.9rem;
             color: var(--text-light);
+            white-space: nowrap;  /* ボタン内の文字も折り返さない */
+            width: auto;          /* 幅を自動（中身に合わせる）にする */
+            flex: 0 1 auto;       /* 必要以上に引き伸ばさない */
         }
         .admin-tab.active { 
             background: var(--primary); 
