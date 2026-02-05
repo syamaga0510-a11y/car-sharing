@@ -94,6 +94,8 @@
             background: white; border-radius: 15px;
             box-shadow: 0 10px 40px rgba(0,0,0,0.2);
             z-index: 1000; padding: 15px; border: 1px solid var(--border);
+            max-height: 400px;
+            overflow-y: auto;
         }
         .notification-dropdown::before {
             content: ''; position: absolute; top: -8px; right: 58px;
@@ -381,14 +383,24 @@
             .car-icon { font-size: 2rem; }
             .date-display { font-size: 0.85rem; }
             
-            /* 通知ドロップダウン */
+            /* 通知コンテナとドロップダウン */
+            .notification-container {
+                position: static;
+                margin-right: 0;
+            }
             .notification-dropdown {
-                right: -20px;
-                width: calc(100vw - 40px); /* 画面幅から余白を引いた幅 */
-                max-width: 320px;
+                position: fixed;
+                top: 80px;
+                left: 50%;
+                right: auto;
+                transform: translateX(-50%);
+                width: calc(100vw - 40px);
+                max-width: 350px;
+                max-height: calc(100vh - 120px); /* 画面の高さに合わせる */
+                overflow-y: auto;
             }
             .notification-dropdown::before {
-                right: 28px;
+                display: none; /* スマホでは三角を非表示 */
             }
             
             /* ヘッダーボタン */
