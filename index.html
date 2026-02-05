@@ -639,22 +639,6 @@
             .my-history-btn:hover { background: #e67e22; transform: translateY(-2px); }
             .month-selector button:hover { background: var(--primary-light); }
         }
-        .admin-tabs {
-            display: flex !important;       /* フレックスボックス強制 */
-            flex-direction: row !important; /* 必ず横並びにする */
-            flex-wrap: nowrap !important;   /* 折り返し禁止 */
-            justify-content: center !important;
-            gap: 10px !important;
-            width: 100% !important;
-            margin-bottom: 15px !important;
-        }
-    
-        .admin-tab {
-            width: auto !important;         /* 幅を中身に合わせる */
-            flex: 0 0 auto !important;      /* 勝手に引き伸ばさない */
-            margin: 0 !important;
-            padding: 6px 15px !important;   /* ボタンの大きさ調整 */
-        }
     </style>
 </head>
 <body>
@@ -1410,12 +1394,22 @@
                         <div className="modal-overlay" onClick={() => setShowAdminMode(false)}>
                             <div className="modal-content" style={{maxWidth: '900px'}} onClick={(e) => e.stopPropagation()}>
                                 <h2>👑 管理者モード</h2>
-                                
-                                <div className="">
-                                    <div className={`admin-tab ${adminTab === 'stats' ? 'active' : ''}`} onClick={() => setAdminTab('stats')}>📊 統計</div>
-                                    <div className={`admin-tab ${adminTab === 'settings' ? 'active' : ''}`} onClick={() => setAdminTab('settings')}>⚙️ 料金設定</div>
+                                <div className="admin-tabs" style={{ display: 'flex', flexDirection: 'row', flexWrap: 'nowrap', gap: '10px', width: '100%' }}>
+                                    <div 
+                                        className={`admin-tab ${adminTab === 'stats' ? 'active' : ''}`} 
+                                        onClick={() => setAdminTab('stats')} 
+                                        style={{ flex: 1, textAlign: 'center', whiteSpace: 'nowrap', padding: '8px 5px' }}
+                                    >
+                                        📊 統計
+                                    </div>
+                                    <div 
+                                        className={`admin-tab ${adminTab === 'settings' ? 'active' : ''}`} 
+                                        onClick={() => setAdminTab('settings')} 
+                                        style={{ flex: 1, textAlign: 'center', whiteSpace: 'nowrap', padding: '8px 5px' }}
+                                    >
+                                        ⚙️ 料金設定
+                                    </div>
                                 </div>
-
                                 {adminTab === 'stats' ? (
                                     <>
                                         <div className="month-selector">
