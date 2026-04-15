@@ -74,7 +74,6 @@
             box-sizing: border-box;
         }
         
-        /* Notification Styles */
         .notification-container { position: relative; margin-right: 15px; display: flex; align-items: center; }
         .notification-btn {
             background: none; border: none; font-size: 1.6rem; cursor: pointer;
@@ -112,7 +111,6 @@
         .notif-desc { font-size: 0.85rem; color: var(--text-light); }
         .notif-actions { display: flex; justify-content: flex-end; margin-top: 5px; }
         
-        /* Calendar Styles */
         .calendar-section { 
             background: var(--card-bg); 
             padding: 30px; 
@@ -164,7 +162,6 @@
         .day-reservations { display: flex; flex-direction: column; gap: 2px; margin-top: auto; }
         .reservation-indicator { width: 100%; height: 4px; border-radius: 2px; background: var(--secondary); }
 
-        /* Sidebar & Forms */
         .sidebar { 
             display: flex; 
             flex-direction: column; 
@@ -186,7 +183,6 @@
         .form-group input, .form-group select { width: 100%; padding: 12px 15px; border: 2px solid var(--border); border-radius: 10px; font-size: 1rem; }
         .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--primary); }
         
-        /* Buttons */
         .btn-primary { width: 100%; background: var(--primary); color: white; border: none; padding: 15px; border-radius: 12px; font-size: 1.1rem; font-weight: 600; cursor: pointer; margin-top: 10px; white-space: nowrap; }
         .btn-secondary { width: 100%; background: var(--btn-secondary-bg); color: var(--btn-secondary-text); border: none; padding: 15px; border-radius: 12px; font-size: 1.1rem; font-weight: 600; cursor: pointer; margin-top: 10px; white-space: nowrap; }
 
@@ -198,7 +194,6 @@
         
         .delete-btn { background: var(--danger); color: white; border: none; padding: 8px 15px; border-radius: 8px; font-weight: 600; cursor: pointer; margin-top: 10px; font-size: 0.9rem; }
         
-        /* Payment Status Styles */
         .payment-status { font-size: 0.8rem; padding: 4px 8px; border-radius: 6px; font-weight: 600; }
         .status-unpaid { background: #ffebee; color: #c62828; }
         .status-pending { background: #fff3e0; color: #ef6c00; }
@@ -207,7 +202,6 @@
         .pay-btn { background: var(--secondary); color: white; border: none; padding: 6px 12px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; margin-left: 10px; }
         .confirm-btn { background: var(--success); color: white; border: none; padding: 6px 12px; border-radius: 8px; font-size: 0.85rem; cursor: pointer; margin-left: 10px; }
 
-        /* Modals */
         .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.7); display: flex; align-items: center; justify-content: center; z-index: 1000; }
         .modal-content { 
             background: white; 
@@ -222,15 +216,12 @@
             flex-direction: column;
             -webkit-overflow-scrolling: touch;
         }
-        
         .modal-content h2 { color: var(--primary); margin-bottom: 20px; text-align: center; font-size: 1.6rem; flex-shrink: 0; }
         
-        /* Modal specific scrollable areas */
         .member-list { display: flex; flex-direction: column; gap: 10px; overflow-y: auto; margin-bottom: 20px; flex: 1; padding-right: 5px; -webkit-overflow-scrolling: touch; }
         .member-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: var(--bg); border-radius: 8px; border: 2px solid var(--border); flex-shrink: 0; }
         .member-name { font-weight: 600; color: var(--text); }
         
-        /* Buttons in Header */
         .header-btn { border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.9rem; margin-left: 5px; }
         .logout-btn { background: var(--danger); color: white; }
         .manage-members-btn { background: var(--primary); color: white; }
@@ -238,491 +229,132 @@
         .admin-mode-btn { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
         .my-history-btn { background: var(--secondary); color: white; }
 
-        /* Small action buttons in lists */
         .list-action-btn { border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: 600; margin-left: 5px; white-space: nowrap; }
         .btn-promote { background: var(--secondary); color: white; }
         .btn-demote { background: var(--text-light); color: white; }
         .btn-delete { background: var(--danger); color: white; }
 
-        /* Stats Table - 改善版 */
-        .stats-table { 
-            width: 100%; 
-            border-collapse: collapse; 
-            margin-top: 10px;
-            font-size: 0.9rem;
-        }
-        .stats-table th, .stats-table td { 
-            padding: 8px 10px;
-            text-align: left; 
-            border-bottom: 1px solid var(--border); 
-        }
-        .stats-table th { 
-            background: var(--primary);
-            color: white;
-            font-weight: 600;
-            position: sticky;
-            top: 0;
-            z-index: 10;
-        }
-        .stats-table tbody tr:hover {
-            background: var(--bg);
-        }
-        .stats-table tfoot td { 
-            font-weight: 700; 
-            background: #fff3cd; 
-            border-top: 2px solid var(--secondary);
-            padding: 10px;
-        }
+        .stats-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.9rem; }
+        .stats-table th, .stats-table td { padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--border); }
+        .stats-table th { background: var(--primary); color: white; font-weight: 600; position: sticky; top: 0; z-index: 10; }
+        .stats-table tbody tr:hover { background: var(--bg); }
+        .stats-table tfoot td { font-weight: 700; background: #fff3cd; border-top: 2px solid var(--secondary); padding: 10px; }
 
-        .month-selector { 
-            display: flex; 
-            align-items: center; 
-            gap: 10px; 
-            margin-bottom: 15px;
-            justify-content: center; 
-            flex-shrink: 0; 
-        }
-        .month-selector button { 
-            padding: 6px 12px;
-            background: var(--primary); 
-            color: white; 
-            border: none; 
-            border-radius: 8px; 
-            cursor: pointer; 
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
-        .month-selector span {
-            font-size: 1.1rem;
-            font-weight: 600;
-            min-width: 140px;
-            text-align: center;
-        }
+        .month-selector { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; justify-content: center; flex-shrink: 0; }
+        .month-selector button { padding: 6px 12px; background: var(--primary); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.9rem; }
+        .month-selector span { font-size: 1.1rem; font-weight: 600; min-width: 140px; text-align: center; }
         
-        /* Admin Mode Tabs - 改善版 */
-        .admin-tabs { 
-            display: flex; 
-            gap: 8px; 
-            margin-bottom: 15px;
-            justify-content: center; 
-        }
-        .admin-tab { 
-            padding: 8px 16px;
-            border: 2px solid transparent; 
-            border-radius: 12px;
-            background: var(--bg); 
-            cursor: pointer; 
-            font-weight: 600; 
-            color: var(--text-light);
-            font-size: 0.9rem;
-            transition: all 0.2s;
-        }
-        .admin-tab.active { 
-            background: var(--primary); 
-            color: white; 
-            box-shadow: var(--shadow);
-        }
+        .admin-tabs { display: flex; gap: 8px; margin-bottom: 15px; justify-content: center; }
+        .admin-tab { padding: 8px 16px; border: 2px solid transparent; border-radius: 12px; background: var(--bg); cursor: pointer; font-weight: 600; color: var(--text-light); font-size: 0.9rem; transition: all 0.2s; }
+        .admin-tab.active { background: var(--primary); color: white; box-shadow: var(--shadow); }
 
-        /* 管理者モーダル専用スタイル - 改善版 */
-        .admin-modal-content {
-            max-width: 95vw !important;
-            width: 1100px !important;
-            max-height: 90vh !important;
-            padding: 20px !important;
-        }
-        .admin-modal-content h2 {
-            font-size: 1.4rem !important;
-            margin-bottom: 15px !important;
-        }
-        .admin-stats-section {
-            flex: 1;
-            overflow-y: auto;
-            min-height: 0;
-        }
-        .admin-stats-section h3 {
-            color: var(--primary);
-            margin-top: 5px;
-            margin-bottom: 8px;
-            font-size: 1.1rem;
-        }
-        .admin-detail-section {
-            margin-top: 20px;
-            border-top: 2px solid var(--border);
-            padding-top: 15px;
-        }
-        .admin-detail-section h3 {
-            font-size: 1.05rem;
-        }
-        .admin-reservation-list {
-            max-height: 280px;
-            overflow-y: auto;
-        }
-        .admin-reservation-item {
-            padding: 10px;
-            background: var(--bg);
-            border-radius: 8px;
-            margin-bottom: 8px;
-            border-left: 3px solid var(--secondary);
-        }
-        .admin-reservation-item h4 {
-            font-size: 0.95rem;
-            margin-bottom: 5px;
-            color: var(--primary);
-        }
-        .admin-reservation-detail {
-            font-size: 0.8rem;
-            color: var(--text-light);
-            margin-bottom: 3px;
-        }
-        .admin-reservation-price {
-            font-size: 1rem;
-            font-weight: 700;
-            color: var(--success);
-            margin-top: 5px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 5px;
-        }
+        .admin-modal-content { max-width: 95vw !important; width: 1100px !important; max-height: 90vh !important; padding: 20px !important; }
+        .admin-modal-content h2 { font-size: 1.4rem !important; margin-bottom: 15px !important; }
+        .admin-stats-section { flex: 1; overflow-y: auto; min-height: 0; }
+        .admin-stats-section h3 { color: var(--primary); margin-top: 5px; margin-bottom: 8px; font-size: 1.1rem; }
+        .admin-detail-section { margin-top: 20px; border-top: 2px solid var(--border); padding-top: 15px; }
+        .admin-detail-section h3 { font-size: 1.05rem; }
+        .admin-reservation-list { max-height: 280px; overflow-y: auto; }
+        .admin-reservation-item { padding: 10px; background: var(--bg); border-radius: 8px; margin-bottom: 8px; border-left: 3px solid var(--secondary); }
+        .admin-reservation-item h4 { font-size: 0.95rem; margin-bottom: 5px; color: var(--primary); }
+        .admin-reservation-detail { font-size: 0.8rem; color: var(--text-light); margin-bottom: 3px; }
+        .admin-reservation-price { font-size: 1rem; font-weight: 700; color: var(--success); margin-top: 5px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 5px; }
 
-        /* Settings Form */
-        .settings-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        .setting-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 12px;
-            background: var(--bg);
-            border-radius: 10px;
-            border: 2px solid var(--border);
-        }
-        .setting-label {
-            font-weight: 600;
-            color: var(--text);
-            font-size: 0.9rem;
-        }
-        .setting-input-group {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .setting-input {
-            width: 90px;
-            padding: 6px;
-            border-radius: 8px;
-            border: 2px solid var(--border);
-            text-align: right;
-            font-size: 0.95rem;
-        }
+        .settings-list { display: flex; flex-direction: column; gap: 12px; }
+        .setting-item { display: flex; align-items: center; justify-content: space-between; padding: 12px; background: var(--bg); border-radius: 10px; border: 2px solid var(--border); }
+        .setting-label { font-weight: 600; color: var(--text); font-size: 0.9rem; }
+        .setting-input-group { display: flex; align-items: center; gap: 8px; }
+        .setting-input { width: 90px; padding: 6px; border-radius: 8px; border: 2px solid var(--border); text-align: right; font-size: 0.95rem; }
 
-        /* Forms */
         .login-form { display: flex; flex-direction: column; gap: 15px; }
         .pin-input { padding: 15px; font-size: 1.5rem; text-align: center; border: 2px solid var(--border); border-radius: 10px; font-family: monospace; letter-spacing: 0.5em; }
         .pin-input:focus { outline: none; border-color: var(--primary); }
         
-        /* Checkbox styling */
-        .checkbox-container {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px;
-            border: 2px solid var(--border);
-            border-radius: 10px;
-            cursor: pointer;
-            background: var(--bg);
-        }
+        .checkbox-container { display: flex; align-items: center; gap: 12px; padding: 12px; border: 2px solid var(--border); border-radius: 10px; cursor: pointer; background: var(--bg); }
         .checkbox-input { width: 20px; height: 20px; accent-color: var(--primary); cursor: pointer; margin: 0; }
         .checkbox-text { font-weight: 600; color: var(--text); user-select: none; }
 
         .calculation-display { background: #fff3cd; padding: 15px; border-radius: 10px; margin-top: 15px; border-left: 4px solid var(--secondary); }
         .calculation-display p { margin: 5px 0; font-size: 0.95rem; }
         
-        /* Toast Message */
         .toast {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--primary);
-            color: white;
-            padding: 15px 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-            z-index: 10000;
-            font-weight: 600;
-            font-size: 1rem;
-            animation: slideDown 0.3s ease-out;
-            max-width: 90%;
-            text-align: center;
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+            background: var(--primary); color: white; padding: 15px 30px;
+            border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            z-index: 10000; font-weight: 600; font-size: 1rem;
+            animation: slideDown 0.3s ease-out; max-width: 90%; text-align: center;
         }
         .toast.success { background: var(--success); }
         .toast.error { background: var(--danger); }
         
         @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateX(-50%) translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(-50%) translateY(0);
-            }
+            from { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
         }
         
-        /* ===== スマホ対応の強化 ===== */
         @media (max-width: 768px) {
             body { padding: 10px; }
-            
             .container { padding: 0; }
-            
-            .header { 
-                flex-direction: column; 
-                gap: 15px; 
-                padding: 15px; 
-            }
-            .header-left { 
-                flex-direction: column; 
-                text-align: center;
-                width: 100%;
-            }
-            .header h1 { 
-                font-size: 1.5rem;
-                flex-direction: column;
-                gap: 5px;
-            }
+            .header { flex-direction: column; gap: 15px; padding: 15px; }
+            .header-left { flex-direction: column; text-align: center; width: 100%; }
+            .header h1 { font-size: 1.5rem; flex-direction: column; gap: 5px; }
             .car-icon { font-size: 2rem; }
             .date-display { font-size: 0.85rem; }
-            
-            .notification-container {
-                position: relative;
-                margin-right: 0;
-            }
-            .notification-dropdown {
-                position: fixed;
-                top: 50%;
-                left: 50%;
-                right: auto;
-                transform: translate(-50%, -50%);
-                width: calc(100vw - 40px);
-                max-width: 350px;
-                max-height: 70vh;
-                overflow-y: auto;
-                z-index: 10000;
-            }
-            .notification-dropdown::before {
-                display: none;
-            }
-            
-            .header-btn { 
-                font-size: 0.75rem;
-                padding: 6px 10px;
-                margin: 3px;
-            }
-            
-            .main-content { 
-                grid-template-columns: 1fr;
-                gap: 15px;
-            }
-            
-            .calendar-section { 
-                padding: 15px; 
-            }
-            .calendar-header { 
-                flex-direction: column;
-                gap: 10px;
-                margin-bottom: 15px;
-            }
-            .calendar-header h2 { 
-                font-size: 1.2rem; 
-            }
-            .nav-buttons { 
-                width: 100%;
-                justify-content: center;
-            }
-            .nav-btn { 
-                padding: 8px 20px;
-                font-size: 0.9rem;
-            }
-            
-            .calendar { 
-                gap: 4px;
-            }
-            .day-header { 
-                padding: 8px 2px;
-                font-size: 0.75rem;
-            }
-            .day-cell { 
-                padding: 4px;
-                border-radius: 8px;
-                min-height: 50px;
-                border-width: 1px;
-            }
-            .day-number { 
-                font-size: 0.8rem;
-                margin-bottom: 2px;
-            }
-            .day-reservations { 
-                gap: 1px; 
-            }
-            .reservation-indicator { 
-                height: 3px;
-            }
-            
-            .card { 
-                padding: 15px; 
-            }
-            .card h3 { 
-                font-size: 1.1rem;
-                margin-bottom: 15px;
-            }
-            
-            .form-group { 
-                margin-bottom: 15px; 
-            }
-            .form-group label { 
-                font-size: 0.85rem; 
-            }
-            .form-group input, 
-            .form-group select { 
-                padding: 10px;
-                font-size: 0.9rem;
-            }
-            
-            .reservation-list { 
-                max-height: 300px; 
-            }
-            .reservation-item { 
-                padding: 12px; 
-            }
-            .reservation-item h4 { 
-                font-size: 0.95rem; 
-            }
-            .reservation-detail { 
-                font-size: 0.8rem; 
-            }
-            .reservation-price { 
-                font-size: 1rem;
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 8px;
-            }
-            
-            .btn-primary, 
-            .btn-secondary { 
-                padding: 12px;
-                font-size: 1rem;
-            }
-            .delete-btn,
-            .pay-btn,
-            .confirm-btn { 
-                font-size: 0.75rem;
-                padding: 5px 10px;
-            }
-            
-            .modal-content { 
-                padding: 20px;
-                width: 95%;
-                max-height: 90vh;
-            }
-            .modal-content h2 { 
-                font-size: 1.3rem;
-                margin-bottom: 10px;
-            }
-            
-            /* 管理者モーダルのスマホ対応 */
-            .admin-modal-content {
-                width: 95% !important;
-                padding: 15px !important;
-            }
-            .admin-modal-content h2 {
-                font-size: 1.2rem !important;
-            }
-            .stats-table {
-                font-size: 0.75rem;
-            }
-            .stats-table th,
-            .stats-table td {
-                padding: 6px 4px;
-            }
-            
-            .member-item { 
-                padding: 10px;
-                flex-direction: column;
-                gap: 8px;
-                align-items: flex-start;
-            }
-            .list-action-btn { 
-                font-size: 0.75rem;
-                padding: 5px 10px;
-            }
-            
-            .month-selector { 
-                gap: 8px; 
-            }
-            .month-selector button { 
-                padding: 6px 12px;
-                font-size: 0.9rem;
-            }
-            .month-selector span { 
-                font-size: 1rem !important;
-                min-width: 120px !important;
-            }
-            
-            .admin-tabs { 
-                gap: 8px;
-                flex-wrap: wrap;
-            }
-            .admin-tab { 
-                padding: 8px 15px;
-                font-size: 0.85rem;
-            }
-            
-            .setting-item { 
-                padding: 12px;
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 8px;
-            }
-            .setting-label { 
-                font-size: 0.9rem; 
-            }
-            .setting-input { 
-                width: 80px;
-                padding: 6px;
-                font-size: 0.9rem;
-            }
-            
-            .calculation-display { 
-                padding: 12px; 
-            }
-            .calculation-display p { 
-                font-size: 0.85rem; 
-            }
+            .notification-container { position: relative; margin-right: 0; }
+            .notification-dropdown { position: fixed; top: 50%; left: 50%; right: auto; transform: translate(-50%, -50%); width: calc(100vw - 40px); max-width: 350px; max-height: 70vh; overflow-y: auto; z-index: 10000; }
+            .notification-dropdown::before { display: none; }
+            .header-btn { font-size: 0.75rem; padding: 6px 10px; margin: 3px; }
+            .main-content { grid-template-columns: 1fr; gap: 15px; }
+            .calendar-section { padding: 15px; }
+            .calendar-header { flex-direction: column; gap: 10px; margin-bottom: 15px; }
+            .calendar-header h2 { font-size: 1.2rem; }
+            .nav-buttons { width: 100%; justify-content: center; }
+            .nav-btn { padding: 8px 20px; font-size: 0.9rem; }
+            .calendar { gap: 4px; }
+            .day-header { padding: 8px 2px; font-size: 0.75rem; }
+            .day-cell { padding: 4px; border-radius: 8px; min-height: 50px; border-width: 1px; }
+            .day-number { font-size: 0.8rem; margin-bottom: 2px; }
+            .day-reservations { gap: 1px; }
+            .reservation-indicator { height: 3px; }
+            .card { padding: 15px; }
+            .card h3 { font-size: 1.1rem; margin-bottom: 15px; }
+            .form-group { margin-bottom: 15px; }
+            .form-group label { font-size: 0.85rem; }
+            .form-group input, .form-group select { padding: 10px; font-size: 0.9rem; }
+            .reservation-list { max-height: 300px; }
+            .reservation-item { padding: 12px; }
+            .reservation-item h4 { font-size: 0.95rem; }
+            .reservation-detail { font-size: 0.8rem; }
+            .reservation-price { font-size: 1rem; flex-direction: column; align-items: flex-start; gap: 8px; }
+            .btn-primary, .btn-secondary { padding: 12px; font-size: 1rem; }
+            .delete-btn, .pay-btn, .confirm-btn { font-size: 0.75rem; padding: 5px 10px; }
+            .modal-content { padding: 20px; width: 95%; max-height: 90vh; }
+            .modal-content h2 { font-size: 1.3rem; margin-bottom: 10px; }
+            .admin-modal-content { width: 95% !important; padding: 15px !important; }
+            .admin-modal-content h2 { font-size: 1.2rem !important; }
+            .stats-table { font-size: 0.75rem; }
+            .stats-table th, .stats-table td { padding: 6px 4px; }
+            .member-item { padding: 10px; flex-direction: column; gap: 8px; align-items: flex-start; }
+            .list-action-btn { font-size: 0.75rem; padding: 5px 10px; }
+            .month-selector { gap: 8px; }
+            .month-selector button { padding: 6px 12px; font-size: 0.9rem; }
+            .month-selector span { font-size: 1rem !important; min-width: 120px !important; }
+            .admin-tabs { gap: 8px; flex-wrap: wrap; }
+            .admin-tab { padding: 8px 15px; font-size: 0.85rem; }
+            .setting-item { padding: 12px; flex-direction: column; align-items: flex-start; gap: 8px; }
+            .setting-label { font-size: 0.9rem; }
+            .setting-input { width: 80px; padding: 6px; font-size: 0.9rem; }
+            .calculation-display { padding: 12px; }
+            .calculation-display p { font-size: 0.85rem; }
         }
         
         @media (max-width: 360px) {
-            .calendar { 
-                gap: 2px; 
-            }
-            .day-cell { 
-                padding: 2px;
-                min-height: 45px;
-            }
-            .day-number { 
-                font-size: 0.7rem; 
-            }
-            .day-header { 
-                font-size: 0.65rem;
-                padding: 6px 1px;
-            }
+            .calendar { gap: 2px; }
+            .day-cell { padding: 2px; min-height: 45px; }
+            .day-number { font-size: 0.7rem; }
+            .day-header { font-size: 0.65rem; padding: 6px 1px; }
         }
 
-        /* デスクトップのみのホバー効果 */
         @media (hover: hover) and (pointer: fine) {
             .notification-btn:hover { transform: scale(1.1); }
             .nav-btn:hover { background: var(--primary-light); transform: translateY(-2px); box-shadow: var(--shadow); }
@@ -754,16 +386,22 @@
             { name: '管理者', pin: '0000', isAdmin: true }
         ];
 
+        // =====================================================
+        // 【変更点】料金設定: 5段階（〜1h / 1〜3h / 3〜6h / 6〜12h / 12〜24h）
+        // 24h超は余剰時間に対して同じ料金体系を繰り返し適用する
+        //   例) 25h = ¥3,000(24h分) + ¥500(1h分)   = ¥3,500
+        //       30h = ¥3,000(24h分) + ¥2,000(6h分)  = ¥5,000
+        //       49h = ¥3,000×2     + ¥500(1h分)    = ¥6,500
+        // =====================================================
         const DEFAULT_PRICE_SETTINGS = {
             rates: [
-                { hours: 1, price: 500 },
-                { hours: 3, price: 1000 },
-                { hours: 6, price: 2000 },
+                { hours: 1,  price: 500  },
+                { hours: 3,  price: 1000 },
+                { hours: 6,  price: 2000 },
                 { hours: 12, price: 2500 },
-                { hours: 24, price: 3000 },
-                { hours: 48, price: 6000 }
+                { hours: 24, price: 3000 }
             ],
-            extraDayPrice: 3000
+            extraDayPrice: 3000  // 後方互換のため残す（実際には使用しない）
         };
 
         const firebaseConfig = {
@@ -776,8 +414,6 @@
           appId: "1:61412197996:web:d65b24df6a1bb83519ba49",
           measurementId: "G-C0CP5Z1ZND"
         };
-
-
 
         let database;
         let isFirebaseReady = false;
@@ -846,7 +482,6 @@
             const [adminTab, setAdminTab] = useState('stats');
             
             const [priceSettings, setPriceSettings] = useState(DEFAULT_PRICE_SETTINGS);
-            
             const [myHistoryMonth, setMyHistoryMonth] = useState(new Date());
 
             useEffect(() => {
@@ -865,9 +500,7 @@
                     }
                 };
                 document.addEventListener('mousedown', handleClickOutside);
-                return () => {
-                    document.removeEventListener('mousedown', handleClickOutside);
-                };
+                return () => { document.removeEventListener('mousedown', handleClickOutside); };
             }, []);
 
             useEffect(() => {
@@ -925,7 +558,13 @@
                 settingsRef.on('value', (snapshot) => {
                     const data = snapshot.val();
                     if (data) {
-                        setPriceSettings(data);
+                        // 旧形式(48h段階含む)は新形式(24hまで)に変換
+                        if (data.rates && data.rates.length >= 6) {
+                            const newRates = data.rates.filter(r => r.hours <= 24);
+                            setPriceSettings({ rates: newRates, extraDayPrice: data.extraDayPrice || 3000 });
+                        } else {
+                            setPriceSettings(data);
+                        }
                     }
                 });
                 
@@ -940,19 +579,32 @@
                 };
             }, []);
 
+            // =====================================================
+            // 【変更点】料金計算ロジック
+            // 24hを1サイクルとして、何サイクル分かを計算し、
+            // 余剰時間に対して同じ料金テーブルを再適用する
+            // =====================================================
             const calculatePrice = useCallback((hours, settings) => {
-                const { rates, extraDayPrice } = settings;
-                
-                for (const rate of rates) {
-                    if (hours <= rate.hours) {
-                        return rate.price;
+                const { rates } = settings;
+                const cycleHours = rates[rates.length - 1].hours; // 24
+                const cyclePrice = rates[rates.length - 1].price; // 3000
+
+                // 完全な24hサイクル数と余剰時間
+                const fullCycles = Math.floor(hours / cycleHours);
+                const remainingHours = hours % cycleHours;
+
+                // 余剰時間の料金（0の場合は0円）
+                let remainingPrice = 0;
+                if (remainingHours > 0) {
+                    for (const rate of rates) {
+                        if (remainingHours <= rate.hours) {
+                            remainingPrice = rate.price;
+                            break;
+                        }
                     }
                 }
-                
-                const maxRate = rates[rates.length - 1];
-                const extraHours = hours - maxRate.hours;
-                const extraDays = Math.ceil(extraHours / 24);
-                return maxRate.price + (extraDays * extraDayPrice);
+
+                return fullCycles * cyclePrice + remainingPrice;
             }, []);
 
             useEffect(() => {
@@ -976,9 +628,7 @@
                 setToastMessage(message);
                 setToastType(type);
                 setShowToast(true);
-                setTimeout(() => {
-                    setShowToast(false);
-                }, 3000);
+                setTimeout(() => { setShowToast(false); }, 3000);
             }, []);
 
             useEffect(() => {
@@ -1001,18 +651,15 @@
             const handleDateClick = useCallback((date) => {
                 setRangeStart(prevStart => {
                     setRangeEnd(prevEnd => {
-                        if ((!prevStart && !prevEnd) || (prevStart && prevEnd)) {
-                            return null;
-                        } else if (prevStart && !prevEnd) {
+                        if ((!prevStart && !prevEnd) || (prevStart && prevEnd)) { return null; }
+                        else if (prevStart && !prevEnd) {
                             if (date < prevStart) return null;
                             else return date;
                         }
                         return prevEnd;
                     });
-                    
-                    if ((!prevStart && !rangeEnd) || (prevStart && rangeEnd)) {
-                        return date;
-                    } else if (prevStart && !rangeEnd) {
+                    if ((!prevStart && !rangeEnd) || (prevStart && rangeEnd)) { return date; }
+                    else if (prevStart && !rangeEnd) {
                         if (date < prevStart) return date;
                         else return prevStart;
                     }
@@ -1073,10 +720,7 @@
             const updatePaymentStatus = useCallback(async (id, status) => {
                 try {
                     await database.ref(`reservations/${id}`).update({ paymentStatus: status });
-                } catch (e) {
-                    console.error('支払い状況更新エラー', e);
-                    alert('更新に失敗しました');
-                }
+                } catch (e) { console.error('支払い状況更新エラー', e); alert('更新に失敗しました'); }
             }, []);
 
             const handleSaveSettings = useCallback(async () => {
@@ -1084,10 +728,7 @@
                 try {
                     await database.ref('settings/prices').set(priceSettings);
                     alert('料金設定を保存しました');
-                } catch (e) {
-                    console.error('設定保存エラー', e);
-                    alert('設定の保存に失敗しました');
-                }
+                } catch (e) { alert('設定の保存に失敗しました'); }
             }, [isAdmin, priceSettings]);
 
             const handleSettingChange = useCallback((index, field, value) => {
@@ -1206,7 +847,6 @@
             const getMemberStatsForMonth = useCallback((year, month) => {
                 const stats = {};
                 let totalAllCount = 0, totalAllHours = 0, totalAllPrice = 0;
-
                 reservations.forEach(r => {
                     const d = new Date((r.startDate || r.date) + 'T00:00:00');
                     if (d.getFullYear() === year && d.getMonth() === month) {
@@ -1214,7 +854,6 @@
                         stats[r.member].count++;
                         stats[r.member].totalHours += r.hours;
                         stats[r.member].totalPrice += r.price;
-                        
                         totalAllCount++;
                         totalAllHours += r.hours;
                         totalAllPrice += r.price;
@@ -1237,7 +876,6 @@
                     else end = new Date(`${r.date}T${r.endTime}:00`);
                     return end < now;
                 };
-
                 if (isAdmin) {
                     return reservations.filter(r => r.paymentStatus === 'pending');
                 } else {
@@ -1252,45 +890,28 @@
 
             return (
                 <>
-                    {showToast && (
-                        <div className={`toast ${toastType}`}>
-                            {toastMessage}
-                        </div>
-                    )}
+                    {showToast && <div className={`toast ${toastType}`}>{toastMessage}</div>}
                     
                     {showLoginModal && (
                         <div className="modal-overlay">
                             <div className="modal-content">
                                 <h2>🔐 ログイン</h2>
-                                
                                 {!isFirebaseReady && (
                                     <div style={{padding: '20px', textAlign: 'center'}}>
-                                        <p style={{color: 'var(--danger)', marginBottom: '15px', fontWeight: '600'}}>
-                                            ⚠️ Firebase接続エラー
-                                        </p>
-                                        <p style={{fontSize: '0.9rem', color: 'var(--text-light)', lineHeight: '1.6'}}>
-                                            Firebase設定を確認してください。<br/>
-                                            コード内の firebaseConfig を<br/>
-                                            正しい設定に置き換える必要があります。
-                                        </p>
+                                        <p style={{color: 'var(--danger)', marginBottom: '15px', fontWeight: '600'}}>⚠️ Firebase接続エラー</p>
+                                        <p style={{fontSize: '0.9rem', color: 'var(--text-light)', lineHeight: '1.6'}}>Firebase設定を確認してください。</p>
                                     </div>
                                 )}
-                                
                                 {isFirebaseReady && isLoading && (
                                     <div style={{padding: '20px', textAlign: 'center'}}>
                                         <p style={{color: 'var(--text-light)'}}>メンバー情報を読み込み中...</p>
                                     </div>
                                 )}
-                                
                                 {isFirebaseReady && !isLoading && members.length === 0 && (
                                     <div style={{padding: '20px', textAlign: 'center'}}>
                                         <p style={{color: 'var(--danger)', marginBottom: '10px'}}>メンバーが登録されていません</p>
-                                        <p style={{fontSize: '0.85rem', color: 'var(--text-light)'}}>
-                                            Firebaseデータベースにメンバーを追加してください
-                                        </p>
                                     </div>
                                 )}
-                                
                                 {isFirebaseReady && !isLoading && members.length > 0 && (
                                     <form onSubmit={handleLogin} className="login-form">
                                         <div className="form-group">
@@ -1320,7 +941,7 @@
                                             </div>
                                             <div style={{display: 'flex', gap: '5px', flexWrap: 'wrap'}}>
                                                 {m.name !== currentUser && (
-                                                    <button className="list-action-btn btn-switch" onClick={() => handleSwitchUser(m.name)} style={{background: 'var(--primary)', color: 'white'}}>ログイン</button>
+                                                    <button className="list-action-btn" onClick={() => handleSwitchUser(m.name)} style={{background: 'var(--primary)', color: 'white'}}>ログイン</button>
                                                 )}
                                                 {isAdmin && (
                                                     <>
@@ -1345,7 +966,6 @@
                                 <form onSubmit={handleAddMember} className="login-form">
                                     <div className="form-group"><label>名前</label><input value={newMemberName} onChange={e => setNewMemberName(e.target.value)} required /></div>
                                     <div className="form-group"><label>PIN (4桁)</label><input type="password" inputMode="numeric" pattern="[0-9]*" className="pin-input" value={newMemberPin} onChange={e => setNewMemberPin(e.target.value)} maxLength="4" required /></div>
-                                    
                                     {isAdmin && (
                                         <div className="form-group">
                                             <label className="checkbox-container">
@@ -1354,7 +974,6 @@
                                             </label>
                                         </div>
                                     )}
-                                    
                                     <div style={{display:'flex', gap:'10px'}}>
                                         <button type="submit" className="btn-primary" style={{flex: 1}}>追加</button>
                                         <button type="button" className="btn-secondary" style={{flex: 1}} onClick={() => setShowAddMemberModal(false)}>キャンセル</button>
@@ -1365,43 +984,17 @@
                     )}
 
                     {showSwitchUserModal && (
-                        <div className="modal-overlay" onClick={() => {
-                            setShowSwitchUserModal(false);
-                            setSwitchToMember('');
-                            setPinInput('');
-                        }}>
+                        <div className="modal-overlay" onClick={() => { setShowSwitchUserModal(false); setSwitchToMember(''); setPinInput(''); }}>
                             <div className="modal-content" style={{maxWidth: '400px'}} onClick={(e) => e.stopPropagation()}>
                                 <h2>🔄 ユーザー切り替え</h2>
                                 <p style={{marginBottom: '20px', color: 'var(--text-light)', textAlign: 'center'}}>
                                     <strong>{switchToMember}</strong> のPINコードを入力してください
                                 </p>
                                 <form onSubmit={handleConfirmSwitchUser} className="login-form">
-                                    <input 
-                                        type="password" 
-                                        inputMode="numeric" 
-                                        pattern="[0-9]*" 
-                                        className="pin-input" 
-                                        value={pinInput} 
-                                        onChange={e => setPinInput(e.target.value)} 
-                                        maxLength="4" 
-                                        placeholder="••••" 
-                                        required 
-                                        autoFocus 
-                                    />
+                                    <input type="password" inputMode="numeric" pattern="[0-9]*" className="pin-input" value={pinInput} onChange={e => setPinInput(e.target.value)} maxLength="4" placeholder="••••" required autoFocus />
                                     <div style={{display:'flex', gap:'10px', marginTop: '15px'}}>
                                         <button type="submit" className="btn-primary" style={{flex: 1}}>切り替え</button>
-                                        <button 
-                                            type="button" 
-                                            className="btn-secondary" 
-                                            style={{flex: 1}} 
-                                            onClick={() => {
-                                                setShowSwitchUserModal(false);
-                                                setSwitchToMember('');
-                                                setPinInput('');
-                                            }}
-                                        >
-                                            キャンセル
-                                        </button>
+                                        <button type="button" className="btn-secondary" style={{flex: 1}} onClick={() => { setShowSwitchUserModal(false); setSwitchToMember(''); setPinInput(''); }}>キャンセル</button>
                                     </div>
                                 </form>
                             </div>
@@ -1417,7 +1010,6 @@
                                     <span>{myHistoryMonth.getFullYear()}年 {myHistoryMonth.getMonth() + 1}月</span>
                                     <button onClick={() => setMyHistoryMonth(new Date(myHistoryMonth.getFullYear(), myHistoryMonth.getMonth() + 1, 1))}>→</button>
                                 </div>
-                                
                                 <div className="reservation-list" style={{maxHeight:'50vh', marginBottom:'20px'}}>
                                     {getReservationsForMonth(currentUser, myHistoryMonth.getFullYear(), myHistoryMonth.getMonth()).map(r => (
                                         <div key={r.id} className="reservation-item">
@@ -1451,7 +1043,6 @@
                         <div className="modal-overlay" onClick={() => setShowAdminMode(false)}>
                             <div className="modal-content admin-modal-content" onClick={(e) => e.stopPropagation()}>
                                 <h2>👑 管理者モード</h2>
-                                
                                 <div className="admin-tabs">
                                     <div className={`admin-tab ${adminTab === 'stats' ? 'active' : ''}`} onClick={() => setAdminTab('stats')}>📊 統計</div>
                                     <div className={`admin-tab ${adminTab === 'settings' ? 'active' : ''}`} onClick={() => setAdminTab('settings')}>⚙️ 料金設定</div>
@@ -1464,7 +1055,6 @@
                                             <span>{selectedMonth.getFullYear()}年 {selectedMonth.getMonth() + 1}月</span>
                                             <button onClick={() => setSelectedMonth(new Date(selectedMonth.getFullYear(), selectedMonth.getMonth() + 1, 1))}>→</button>
                                         </div>
-
                                         <div className="admin-stats-section">
                                             {(() => {
                                                 const { stats, totalAllCount, totalAllHours, totalAllPrice } = getMemberStatsForMonth(selectedMonth.getFullYear(), selectedMonth.getMonth());
@@ -1495,7 +1085,6 @@
                                                                 </tr>
                                                             </tfoot>
                                                         </table>
-
                                                         {selectedMemberForStats && (
                                                             <div className="admin-detail-section">
                                                                 <h3>📝 {selectedMemberForStats} の詳細</h3>
@@ -1511,14 +1100,10 @@
                                                                                 <div style={{display:'flex', gap:'5px', flexWrap:'wrap'}}>
                                                                                     {renderStatusBadge(r.paymentStatus)}
                                                                                     {r.paymentStatus === 'pending' && (
-                                                                                        <button className="confirm-btn" style={{fontSize:'0.75rem', padding:'4px 8px'}} onClick={() => {
-                                                                                            if(window.confirm('支払いを受け取り済みにしますか？')) updatePaymentStatus(r.id, 'confirmed');
-                                                                                        }}>受取確認</button>
+                                                                                        <button className="confirm-btn" style={{fontSize:'0.75rem', padding:'4px 8px'}} onClick={() => { if(window.confirm('支払いを受け取り済みにしますか？')) updatePaymentStatus(r.id, 'confirmed'); }}>受取確認</button>
                                                                                     )}
                                                                                     {r.paymentStatus === 'unpaid' && (
-                                                                                        <button className="confirm-btn" style={{background: 'var(--primary)', fontSize:'0.75rem', padding:'4px 8px'}} onClick={() => {
-                                                                                            if(window.confirm('支払いを完了とし、受取済みにしますか？')) updatePaymentStatus(r.id, 'confirmed');
-                                                                                        }}>受取完了</button>
+                                                                                        <button className="confirm-btn" style={{background: 'var(--primary)', fontSize:'0.75rem', padding:'4px 8px'}} onClick={() => { if(window.confirm('支払いを完了とし、受取済みにしますか？')) updatePaymentStatus(r.id, 'confirmed'); }}>受取完了</button>
                                                                                     )}
                                                                                     <button className="delete-btn" style={{fontSize:'0.75rem', padding:'4px 8px', marginTop:0, marginLeft:0}} onClick={() => handleDeleteReservation(r.id)}>削除</button>
                                                                                 </div>
@@ -1536,11 +1121,20 @@
                                     </>
                                 ) : (
                                     <div style={{flex: 1, overflowY: 'auto'}}>
-                                        <h3 style={{color: 'var(--primary)', marginBottom: '12px', fontSize:'1.05rem'}}>⚙️ 料金プラン設定</h3>
+                                        <h3 style={{color: 'var(--primary)', marginBottom: '8px', fontSize:'1.05rem'}}>⚙️ 料金プラン設定</h3>
+                                        <p style={{fontSize:'0.85rem', color:'var(--text-light)', marginBottom:'12px', lineHeight:'1.6', background:'#f0f4ff', padding:'10px', borderRadius:'8px', borderLeft:'3px solid var(--primary)'}}>
+                                            ※ 24時間を超えた分は同じ料金体系を繰り返し適用します。<br/>
+                                            例）25h = ¥3,000(24h) + ¥500(1h) = <strong>¥3,500</strong><br/>
+                                            　　30h = ¥3,000(24h) + ¥2,000(6h) = <strong>¥5,000</strong>
+                                        </p>
                                         <div className="settings-list">
                                             {priceSettings.rates.map((rate, index) => (
                                                 <div key={index} className="setting-item">
-                                                    <span className="setting-label">{rate.hours}時間以内</span>
+                                                    <span className="setting-label">
+                                                        {index === 0
+                                                            ? `〜${rate.hours}時間以内`
+                                                            : `${priceSettings.rates[index-1].hours}〜${rate.hours}時間`}
+                                                    </span>
                                                     <div className="setting-input-group">
                                                         <input 
                                                             type="number" 
@@ -1552,18 +1146,6 @@
                                                     </div>
                                                 </div>
                                             ))}
-                                            <div className="setting-item" style={{borderTop: '2px solid var(--primary)', marginTop: '8px'}}>
-                                                <span className="setting-label">以降24時間ごとの追加料金</span>
-                                                <div className="setting-input-group">
-                                                    <input 
-                                                        type="number" 
-                                                        className="setting-input" 
-                                                        value={priceSettings.extraDayPrice} 
-                                                        onChange={(e) => setPriceSettings({...priceSettings, extraDayPrice: Number(e.target.value)})}
-                                                    />
-                                                    <span>円</span>
-                                                </div>
-                                            </div>
                                         </div>
                                         <button className="btn-primary" style={{padding:'10px', fontSize:'1rem'}} onClick={handleSaveSettings}>設定を保存</button>
                                     </div>
@@ -1579,16 +1161,13 @@
                             <div className="header-left">
                                 <h1><span className="car-icon">🚗</span>家族カーシェア管理</h1>
                             </div>
-                            
                             <div style={{display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '10px', width: '100%'}}>
                                 <div style={{display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'flex-end', width: '100%'}}>
-                                    
                                     <div className="notification-container">
                                         <button className="notification-btn" onClick={() => setShowNotifications(!showNotifications)}>
                                             🔔
                                             {notifications.length > 0 && <span className="badge">{notifications.length}</span>}
                                         </button>
-
                                         {showNotifications && (
                                             <>
                                                 <div className="modal-overlay" onClick={() => setShowNotifications(false)} style={{zIndex: 19999}}></div>
@@ -1607,13 +1186,9 @@
                                                                 <div className="notif-desc">¥{n.price.toLocaleString()} ({n.hours.toFixed(1)}h)</div>
                                                                 <div className="notif-actions">
                                                                     {isAdmin ? (
-                                                                        <button className="confirm-btn" onClick={() => {
-                                                                            if(window.confirm('受取確認しますか？')) updatePaymentStatus(n.id, 'confirmed');
-                                                                        }}>受取確認</button>
+                                                                        <button className="confirm-btn" onClick={() => { if(window.confirm('受取確認しますか？')) updatePaymentStatus(n.id, 'confirmed'); }}>受取確認</button>
                                                                     ) : (
-                                                                        <button className="pay-btn" onClick={() => {
-                                                                            if(window.confirm('支払い完了を通知しますか？')) updatePaymentStatus(n.id, 'pending');
-                                                                        }}>支払い完了</button>
+                                                                        <button className="pay-btn" onClick={() => { if(window.confirm('支払い完了を通知しますか？')) updatePaymentStatus(n.id, 'pending'); }}>支払い完了</button>
                                                                     )}
                                                                 </div>
                                                             </div>
@@ -1623,7 +1198,6 @@
                                             </>
                                         )}
                                     </div>
-
                                     <span style={{marginRight: '10px', fontWeight: '600'}}>ログイン: <span style={{color:'var(--primary)'}}>{currentUser}</span></span>
                                     <button className="header-btn my-history-btn" onClick={() => setShowMyHistoryModal(true)}>👤 マイ履歴</button>
                                     {isAdmin && <button className="header-btn admin-mode-btn" onClick={() => setShowAdminMode(true)}>👑 管理者</button>}
@@ -1655,7 +1229,6 @@
                                         const isToday = new Date().toDateString() === d.date.toDateString();
                                         let cls = `day-cell ${!d.isCurrentMonth?'other-month':''} ${isToday?'today':''} ${d.date.getDay()===0?'sunday':d.date.getDay()===6?'saturday':''}`;
                                         if (isStart) cls += ' range-start'; if (isEnd) cls += ' range-end'; if (isInRange) cls += ' in-range';
-                                        
                                         return (
                                             <div key={i} className={cls} onClick={() => handleDateClick(d.date)}>
                                                 <div className="day-number">{d.date.getDate()}</div>
